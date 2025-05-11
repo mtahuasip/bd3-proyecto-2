@@ -4,6 +4,7 @@ from src.extensions import api
 from src.models.auth import auth_dao
 from src.schemas.auth_schema import register, login, change_password, auth_tokens
 from src.schemas.user_schema import user_output, user_update
+from src.decorators.roles_required import roles_required
 
 ns = Namespace("auth")
 
@@ -32,6 +33,7 @@ class Login(Resource):
 class VerifyToken(Resource):
     @ns.doc("verify_token", security="Bearer Auth")
     @jwt_required()
+    @roles_required("admin", "staff", "user")
     @ns.response(200, "Token válido")
     def get(self):
         """Verificar token"""
@@ -42,6 +44,7 @@ class VerifyToken(Resource):
 class RefreshToken(Resource):
     @ns.doc("refresh_token", security="Bearer Auth")
     @jwt_required(refresh=True)
+    @roles_required("admin", "staff", "user")
     @ns.marshal_with(auth_tokens, code=201)
     def post(self):
         """Refrescar token"""
@@ -53,6 +56,7 @@ class RefreshToken(Resource):
 class Me(Resource):
     @ns.doc("get_me", security="Bearer Auth")
     @jwt_required()
+    @roles_required("admin", "staff", "user")
     @ns.marshal_with(user_output)
     def get(self):
         """ "Obtener perfil de usuario"""
@@ -64,6 +68,7 @@ class Me(Resource):
 class UpdateProfile(Resource):
     @ns.doc("update_profile", security="Bearer Auth")
     @jwt_required()
+    @roles_required("admin", "staff", "user")
     @ns.expect(user_update, validate=True)
     @ns.marshal_with(user_output)
     def patch(self):
@@ -76,6 +81,7 @@ class UpdateProfile(Resource):
 class ChangePassword(Resource):
     @ns.doc("change_password", security="Bearer Auth")
     @jwt_required()
+    @roles_required("admin", "staff", "user")
     @ns.expect(change_password, validate=True)
     @ns.response(200, "Contraseña cambiada correctamente")
     def patch(self):
