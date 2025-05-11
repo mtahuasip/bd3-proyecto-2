@@ -1,5 +1,6 @@
 from flask_pymongo import PyMongo
 from flask_restx import Api
+from flask_jwt_extended import JWTManager
 from .config import Config
 
 mongo = PyMongo()
@@ -8,3 +9,4 @@ api = Api(
     description=Config.API_DESCRIPTION,
     version=Config.API_VERSION,
 )
+jwt = JWTManager()
