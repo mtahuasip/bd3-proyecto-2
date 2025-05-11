@@ -5,6 +5,7 @@ from .favorite_resource import ns as favorite
 from .playlist_resource import ns as playlist
 from .reaction_resource import ns as reaction
 from .user_resource import ns as user
+from .auth_resource import ns as auth
 
 namespaces = [
     catalog,
@@ -14,4 +15,5 @@ namespaces = [
     playlist,
     reaction,
     user,
+    auth,
 ]
