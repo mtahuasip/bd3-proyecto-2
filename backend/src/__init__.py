@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 from .config import Config
-from .extensions import mongo, api, jwt
+from .extensions import mongo, redis, api, jwt
 from .resources import namespaces
 from .utils.create_user import create_admin_user_if_not_exists
 
@@ -13,6 +13,7 @@ def create_app():
     CORS(app)
 
     mongo.init_app(app)
+    redis.init_app(app)
     api.init_app(app)
     jwt.init_app(app)
 
