@@ -48,13 +48,10 @@ export const Navbar = () => {
       </NavigationMenu>
 
       <div className="flex items-center justify-between gap-4">
-        <Button className="text-lg" variant="outline" size="lg">
+        <Button variant="outline" size="lg">
           <Link href="/login">Ingresar</Link>
         </Button>
-        <Button
-          className="bg-blue-500 text-lg text-white hover:bg-blue-600"
-          size="lg"
-        >
+        <Button>
           <Link href="/register">Suscribirse</Link>
         </Button>
       </div>

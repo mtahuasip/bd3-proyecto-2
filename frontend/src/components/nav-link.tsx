@@ -21,11 +21,7 @@ export const NavLink: FC<NavLinkProps> = ({ name, href }) => {
   return (
     <NavigationMenuLink
       asChild
-      className={clsx(
-        navigationMenuTriggerStyle(),
-        isActive && "text-blue-500 hover:text-blue-500",
-        "text-lg"
-      )}
+      className={clsx(navigationMenuTriggerStyle(), isActive && "bg-accent")}
     >
       <Link href={href}>{name}</Link>
     </NavigationMenuLink>
