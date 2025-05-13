@@ -35,7 +35,7 @@ class AuthDAO(object):
         if not is_valid:
             api.abort(401, "Credenciales inválidas")
 
-        response = jsonify({"message": "Inicio de sesión exitoso"})
+        response = jsonify({"msg": "Inicio de sesión exitoso"})
         access_token = create_access_token(
             identity=user_found["email"],
             additional_claims={"roles": user_found["roles"]},

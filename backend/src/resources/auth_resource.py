@@ -78,4 +78,4 @@ class Logout(Resource):
         """Cerrar sesión"""
         response = jsonify({"msg": "Sesión cerrada con éxito"})
         unset_jwt_cookies(response)
-        # return "", 200
+        return response
