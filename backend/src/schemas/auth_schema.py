@@ -13,15 +13,6 @@ register = api.model(
     },
 )
 
-auth_tokens = api.model(
-    "AuthTokens",
-    {
-        "access_token": fields.String(readonly=True, default=None),
-        "refresh_token": fields.String(readonly=True, default=None),
-        "token_type": fields.String(default="Bearer"),
-        "expires_in": fields.Integer(readonly=True, default=900000),
-    },
-)
 
 login = api.model(
     "Login",

@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required
 from src.extensions import api
 from src.models.comment import comment_dao
 from src.schemas.comment_schema import comment
-from src.decorators.roles_required import roles_required
+from src.utils.security.roles_required import roles_required
 
 ns = Namespace("comments")
 

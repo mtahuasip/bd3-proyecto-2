@@ -3,12 +3,14 @@ from flask_cors import CORS
 from .config import Config
 from .extensions import mongo, redis, api, jwt
 from .resources import namespaces
+from .utils.security.jwt_refresh import refresh_expiring_jwts
 from .utils.create_user import create_admin_user_if_not_exists
 
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+    app.after_request(refresh_expiring_jwts)
 
     CORS(app)
 

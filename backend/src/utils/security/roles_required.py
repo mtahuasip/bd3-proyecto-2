@@ -10,8 +10,10 @@ def roles_required(*roles):
             verify_jwt_in_request()
             claims = get_jwt()
             user_roles = claims.get("roles", [])
+
             if not any(role in user_roles for role in roles):
                 abort(403, "No tienes permisos para acceder a esta ruta")
+
             return fn(*args, **kwargs)
 
         return decorator

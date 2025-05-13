@@ -1,5 +1,7 @@
 import os
+from datetime import timedelta
 from dotenv import load_dotenv
+from .utils.utils import str_to_bool
 
 load_dotenv()
 
@@ -11,10 +13,15 @@ class Config:
     API_PREFIX = os.getenv("API_PREFIX")
 
     PORT = int(os.getenv("PORT"))
-    DEBUG = bool(os.getenv("DEBUG"))
-    SECRET_KEY = os.getenv("SECRET_KEY")
+    DEBUG = str_to_bool(os.getenv("DEBUG"))
 
+    JWT_COOKIE_SECURE = str_to_bool(os.getenv("JWT_COOKIE_SECURE"))
+    JWT_TOKEN_LOCATION = os.getenv("JWT_TOKEN_LOCATION").split(",")
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(
+        hours=float(os.getenv("JWT_ACCESS_TOKEN_EXPIRES"))
+    )
+    JWT_COOKIE_CSRF_PROTECT = str_to_bool(os.getenv("JWT_COOKIE_CSRF_PROTECT"))
 
     MONGO_URI = os.getenv("MONGO_URI")
 

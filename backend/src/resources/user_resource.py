@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required
 from src.extensions import api
 from src.models.user import user_dao
 from src.schemas.user_schema import user_input, user_output, user_update
-from src.decorators.roles_required import roles_required
+from src.utils.security.roles_required import roles_required
 
 ns = Namespace("users")
 

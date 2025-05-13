@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required
 from src.extensions import api
 from src.models.category import category_dao
 from src.schemas.category_schema import category
-from src.decorators.roles_required import roles_required
+from src.utils.security.roles_required import roles_required
 
 ns = Namespace("categories")
 
