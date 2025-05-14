@@ -24,6 +24,7 @@ class Config:
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes)
     JWT_COOKIE_CSRF_PROTECT = str_to_bool(os.getenv("JWT_COOKIE_CSRF_PROTECT"))
+    JWT_ACCESS_COOKIE_NAME = os.getenv("JWT_ACCESS_COOKIE_NAME")
 
     MONGO_URI = os.getenv("MONGO_URI")
 
