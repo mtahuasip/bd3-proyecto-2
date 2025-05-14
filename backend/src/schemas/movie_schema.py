@@ -1,8 +1,8 @@
 from flask_restx import fields
 from src.extensions import api
 
-catalog = api.model(
-    "Catalog",
+movie = api.model(
+    "Movie",
     {
         "_id": fields.String(readonly=True),
         "title": fields.String(required=True, min_length=1, max_length=100),

@@ -28,13 +28,13 @@ class FavoriteDAO(object):
         api.abort(404, "Favorito no encontrado")
 
     def create(self, data):
-        if len(data["catalogs"]) == 0:
-            api.abort(400, "El campo 'catalogs' no puede ser una lista vacía")
+        if len(data["movies"]) == 0:
+            api.abort(400, "El campo 'movies' no puede ser una lista vacía")
 
         try:
             new_favorite = {
                 "user": data["user"],
-                "catalogs": data["catalogs"],
+                "movies": data["movies"],
                 "created_at": datetime.now(),
                 "updated_at": datetime.now(),
             }
@@ -52,7 +52,7 @@ class FavoriteDAO(object):
 
     #     try:
     #         favorite_update = {
-    #             "catalogs": data["catalogs"],
+    #             "movies": data["movies"],
     #             "updated_at": datetime.now(),
     #         }
 

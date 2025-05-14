@@ -6,7 +6,7 @@ favorite = api.model(
     {
         "_id": fields.String(readonly=True),
         "user": fields.String(required=True, min_length=1, max_length=100),
-        "catalogs": fields.List(
+        "movies": fields.List(
             fields.String(required=True, min_length=1, max_length=100),
             required=True,
         ),

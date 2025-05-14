@@ -28,8 +28,8 @@ class PlaylistDAO(object):
         api.abort(404, "Lista de reproducción no encontrada")
 
     def create(self, data):
-        if len(data["catalogs"]) == 0:
-            api.abort(400, "El campo 'catalogs' no puede ser una lista vacía")
+        if len(data["movies"]) == 0:
+            api.abort(400, "El campo 'movies' no puede ser una lista vacía")
 
         try:
             new_playlist = {
@@ -37,7 +37,7 @@ class PlaylistDAO(object):
                 "description": data["description"],
                 "user": data["user"],
                 "visibility": data["visibility"],
-                "catalogs": data["catalogs"],
+                "movies": data["movies"],
                 "created_at": datetime.now(),
                 "updated_at": datetime.now(),
             }

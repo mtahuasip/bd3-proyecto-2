@@ -33,7 +33,7 @@ class ReactionDAO(object):
             new_reaction = {
                 "type": data["type"],
                 "user": data["user"],
-                "catalog": data["catalog"],
+                "movie": data["movie"],
                 "created_at": datetime.now(),
                 "updated_at": datetime.now(),
             }

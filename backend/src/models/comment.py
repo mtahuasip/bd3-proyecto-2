@@ -32,7 +32,7 @@ class CommentDAO(object):
             new_comment = {
                 "user": data["user"],
                 "content": data["content"],
-                "catalog": data["catalog"],
+                "movie": data["movie"],
                 "answers": [],
                 "created_at": datetime.now(),
                 "updated_at": datetime.now(),
@@ -50,14 +50,14 @@ class CommentDAO(object):
         self.get(id)
 
         try:
-            catalog_update = {
+            comment_update = {
                 "content": data["content"],
                 "updated_at": datetime.now(),
             }
 
             mongo.db.comments.update_one(
                 {"_id": ObjectId(id)},
-                {"$set": catalog_update},
+                {"$set": comment_update},
             )
 
             return mongo.db.comments.find_one({"_id": ObjectId(id)})

@@ -50,7 +50,7 @@ class CategoryDAO(object):
         self.get(id)
 
         try:
-            catalog_update = {
+            category_update = {
                 "name": data["name"],
                 "description": data["description"],
                 "slug": slugify(data["name"]),
@@ -59,7 +59,7 @@ class CategoryDAO(object):
 
             mongo.db.categories.update_one(
                 {"_id": ObjectId(id)},
-                {"$set": catalog_update},
+                {"$set": category_update},
             )
 
             return mongo.db.categories.find_one({"_id": ObjectId(id)})

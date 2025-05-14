@@ -6,10 +6,10 @@ from src.extensions import api, mongo
 from src.utils.utils import verify_id
 
 
-class CatalogDAO(object):
+class MovieDAO(object):
     def get_all(self):
         try:
-            return list(mongo.db.catalogs.find())
+            return list(mongo.db.movies.find())
         except PyMongoError as e:
             print(f"Error de MongoDB: {e}")
             api.abort(500, "Error interno del servidor")
@@ -18,22 +18,22 @@ class CatalogDAO(object):
         verify_id(id, api)
 
         try:
-            catalog_found = mongo.db.catalogs.find_one({"_id": ObjectId(id)})
+            movie_found = mongo.db.movies.find_one({"_id": ObjectId(id)})
         except PyMongoError as e:
             print(f"Error de MongoDB: {e}")
             api.abort(500, "Error interno del servidor")
 
-        if catalog_found:
-            return catalog_found
+        if movie_found:
+            return movie_found
 
-        api.abort(404, "Catálogo no encontrado")
+        api.abort(404, "Película no encontrado")
 
     def create(self, data):
         if len(data["categories"]) == 0:
             api.abort(400, "El campo 'categories' no puede ser una lista vacía")
 
         try:
-            new_catalog = {
+            new_movie = {
                 "title": data["title"],
                 "description": data["description"],
                 "duration": data["duration"],
@@ -48,9 +48,9 @@ class CatalogDAO(object):
                 "created_at": datetime.now(),
                 "updated_at": datetime.now(),
             }
-            result = mongo.db.catalogs.insert_one(new_catalog)
+            result = mongo.db.movies.insert_one(new_movie)
 
-            return mongo.db.catalogs.find_one({"_id": result.inserted_id})
+            return mongo.db.movies.find_one({"_id": result.inserted_id})
 
         except PyMongoError as e:
             print(f"Error: {e}")
@@ -61,7 +61,7 @@ class CatalogDAO(object):
         self.get(id)
 
         try:
-            catalog_update = {
+            movie_update = {
                 "title": data["title"],
                 "description": data["description"],
                 "duration": data["duration"],
@@ -71,12 +71,12 @@ class CatalogDAO(object):
                 "updated_at": datetime.now(),
             }
 
-            mongo.db.catalogs.update_one(
+            mongo.db.movies.update_one(
                 {"_id": ObjectId(id)},
-                {"$set": catalog_update},
+                {"$set": movie_update},
             )
 
-            return mongo.db.catalogs.find_one({"_id": ObjectId(id)})
+            return mongo.db.movies.find_one({"_id": ObjectId(id)})
         except PyMongoError as e:
             print(f"Error: {e}")
             api.abort(500, "Error interno del servidor")
@@ -86,10 +86,10 @@ class CatalogDAO(object):
         self.get(id)
 
         try:
-            mongo.db.catalogs.delete_one({"_id": ObjectId(id)})
+            mongo.db.movies.delete_one({"_id": ObjectId(id)})
         except PyMongoError as e:
             print(f"Error: {e}")
             api.abort(500, "Error interno del servidor")
 
 
-catalog_dao = CatalogDAO()
+movie_dao = MovieDAO()

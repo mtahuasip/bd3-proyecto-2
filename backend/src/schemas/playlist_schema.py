@@ -9,7 +9,7 @@ playlist = api.model(
         "description": fields.String(required=True, min_length=1, max_length=500),
         "user": fields.String(required=True, min_length=1, max_length=100),
         "visibility": fields.Boolean(required=True),
-        "catalogs": fields.List(
+        "movies": fields.List(
             fields.String(required=True, min_length=1, max_length=100),
             required=True,
         ),
