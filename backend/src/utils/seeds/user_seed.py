@@ -4,14 +4,14 @@ from src.extensions import mongo
 from src.config import Config
 
 
-def create_admin_user_if_not_exists():
+def create_admin_user():
     email = "admin@mail.com"
     password = Config.ADMIN_PASSWORD
 
     try:
         existing = mongo.db.users.find_one({"email": email})
         if existing:
-            print("[INFO] Usuario admin ya existe.")
+            print("⚠️ Usuario administrador ya existe.")
             return
 
         hashed_password = generate_password_hash(password)
@@ -24,6 +24,6 @@ def create_admin_user_if_not_exists():
             }
         )
 
-        print("[✔] Usuario admin creado correctamente.")
+        print("✅ Usuario admin creado correctamente.")
     except PyMongoError as e:
-        print(f"[ERROR] Error al crear usuario admin: {e}")
+        print(f"❌ Error al crear usuario admin: {e}")

@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required
 from src.extensions import api
 from src.models.favorite import favorite_dao
 from src.schemas.favorite_schema import favorite
-from src.utils.security.roles_required import roles_required
+from src.utils.security.decorators import roles_required
 
 ns = Namespace("favorites")
 

@@ -5,7 +5,7 @@ from src.extensions import api
 from src.models.auth import auth_dao
 from src.schemas.auth_schema import register, login, change_password
 from src.schemas.user_schema import user_output, user_update
-from src.utils.security.roles_required import roles_required
+from src.utils.security.decorators import roles_required
 
 ns = Namespace("auth")
 
@@ -76,6 +76,6 @@ class Logout(Resource):
     @ns.response(200, "Sesión cerrada con éxito")
     def post(self):
         """Cerrar sesión"""
-        response = jsonify({"msg": "Sesión cerrada con éxito"})
+        response = jsonify({"message": "Sesión cerrada con éxito"})
         unset_jwt_cookies(response)
         return response

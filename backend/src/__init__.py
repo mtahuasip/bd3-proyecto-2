@@ -1,10 +1,11 @@
 from flask import Flask
 from flask_cors import CORS
 from .config import Config
-from .extensions import mongo, redis, api, jwt
+from .utils.connections.mongo import init_mongo
+from .utils.connections.redis import init_redis
+from .utils.security.jwt import refresh_expiring_jwts
+from .extensions import api, jwt
 from .resources import namespaces
-from .utils.security.jwt_refresh import refresh_expiring_jwts
-from .utils.create_user import create_admin_user_if_not_exists
 
 
 def create_app():
@@ -12,15 +13,13 @@ def create_app():
     app.config.from_object(Config)
     app.after_request(refresh_expiring_jwts)
 
-    CORS(app)
+    CORS(app, supports_credentials=True, origins=Config.ORIGINS)
 
-    mongo.init_app(app)
-    redis.init_app(app)
+    init_redis(app)
+    init_mongo(app)
+
     api.init_app(app)
     jwt.init_app(app)
-
-    with app.app_context():
-        create_admin_user_if_not_exists()
 
     for namespace in namespaces:
         api.add_namespace(namespace, path=f"/{Config.API_PREFIX}/{namespace.name}")

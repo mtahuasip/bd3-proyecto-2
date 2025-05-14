@@ -15,12 +15,14 @@ class Config:
     PORT = int(os.getenv("PORT"))
     DEBUG = str_to_bool(os.getenv("DEBUG"))
 
+    ORIGINS = os.getenv("ORIGINS").split(",")
+
+    minutes = float(os.getenv("JWT_ACCESS_TOKEN_EXPIRES"))
+
     JWT_COOKIE_SECURE = str_to_bool(os.getenv("JWT_COOKIE_SECURE"))
     JWT_TOKEN_LOCATION = os.getenv("JWT_TOKEN_LOCATION").split(",")
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(
-        hours=float(os.getenv("JWT_ACCESS_TOKEN_EXPIRES"))
-    )
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes)
     JWT_COOKIE_CSRF_PROTECT = str_to_bool(os.getenv("JWT_COOKIE_CSRF_PROTECT"))
 
     MONGO_URI = os.getenv("MONGO_URI")
