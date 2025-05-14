@@ -30,38 +30,38 @@ Framework: **Flask RESTx**
 ### ⚙️ Instalación
 
 1. Clonar el repositorio (si no lo hiciste aún)
-
+   
    ```bash
    git clone https://github.com/mtahuasip/bd3-proyecto-2.git
    ```
 
 2. Navegar al directorio del backend:
-
+   
    ```bash
    cd bd3-proyecto-2/backend
    ```
 
 3. Crear y activar un entorno virtual:
-
+   
    ```bash
    python -m venv venv
    source venv/bin/activate  # En Windows: venv\Scripts\activate
    ```
 
 4. Instalar dependencias:
-
+   
    ```bash
    pip install -r requirements.txt
    ```
 
 5. Configurar las variables de entorno:
-
+   
    - Cambiar el nombre o copiar el archivo `.env.example` a `.env`
-
+   
    - Configurar todas las variables de entorno
 
 6. Iniciar el servidor Flask:
-
+   
    ```bash
    python app.py
    ```
@@ -82,25 +82,25 @@ Framework: **Next.js 15**
 ### ⚙️ Instalación
 
 1. Navegar al directorio del frontend:
-
+   
    ```bash
    cd bd3-proyecto-2/frontend
    ```
 
 2. Instalar dependencias:
-
+   
    ```bash
    npm install
    ```
 
 3. Configurar las variables de entorno:
-
-   - Cambiar el nombre o copiar el archivo `.env.example` a `.env`
-
+   
+   - Cambiar el nombre o copiar el archivo `env` a `.env`
+   
    - Configurar todas las variables de entorno
 
 4. Levantar el servidor de desarrollo:
-
+   
    ```bash
    npm run dev
    ```
