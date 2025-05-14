@@ -6,7 +6,7 @@ from src.config import Config
 
 def create_admin_user():
     email = "admin@mail.com"
-    password = Config.ADMIN_PASSWORD
+    password = Config.USERS_PASSWORD
 
     try:
         existing = mongo.db.users.find_one({"email": email})

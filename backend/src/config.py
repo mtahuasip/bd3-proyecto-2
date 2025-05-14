@@ -30,4 +30,4 @@ class Config:
     REDIS_HOST = os.getenv("REDIS_HOST")
     REDIS_PORT = int(os.getenv("REDIS_PORT"))
 
-    ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
+    USERS_PASSWORD = os.getenv("USERS_PASSWORD")
