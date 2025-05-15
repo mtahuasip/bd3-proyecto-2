@@ -4,7 +4,7 @@ const API_BASE_URL =
     : process.env.NEXT_PUBLIC_API_BASE_URL;
 
 interface FetchOptions {
-  method?: "GET" | "POST" | "PUT" | "DELETE";
+  method?: "GET" | "POST" | "PATCH" | "DELETE";
   endpoint: string;
   body?: any;
   headers?: Record<string, string>;

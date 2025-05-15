@@ -65,10 +65,17 @@ export const Navbar = async () => {
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>{session.email}</DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/profile">{session.username}</Link>
+                </DropdownMenuItem>
                 <Separator />
-                <DropdownMenuItem>Perfil</DropdownMenuItem>
-                <DropdownMenuItem>Cambiar contraseña</DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/update-profile">Editar datos</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/change-password">Cambiar contraseña</Link>
+                </DropdownMenuItem>
+                <Separator />
                 <LogoutButton />
               </DropdownMenuContent>
             </DropdownMenu>
