@@ -60,6 +60,15 @@ class UserDAO(object):
     def update(self, id, data):
         verify_id(id, api)
         self.get(id)
+        object_id = ObjectId(id)
+
+        user_with_same_username = self.get_user_by_username(data["username"])
+        if user_with_same_username and user_with_same_username["_id"] != object_id:
+            api.abort(400, "Nombre de usuario ya existe")
+
+        user_with_same_email = self.get_user_by_email(data["email"])
+        if user_with_same_email and user_with_same_email["_id"] != object_id:
+            api.abort(400, "Email ya existe")
 
         try:
             user_update = {
@@ -68,9 +77,9 @@ class UserDAO(object):
                 "updated_at": datetime.now(),
             }
 
-            mongo.db.users.update_one({"_id": ObjectId(id)}, {"$set": user_update})
+            mongo.db.users.update_one({"_id": object_id}, {"$set": user_update})
 
-            return mongo.db.users.find_one({"_id": ObjectId(id)})
+            return mongo.db.users.find_one({"_id": object_id})
         except PyMongoError as e:
             print(f"Error: {e}")
             api.abort(500, "Error interno del servidor")
