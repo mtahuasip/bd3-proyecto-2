@@ -22,7 +22,7 @@ export const Navbar = async () => {
   const session = await getSession();
 
   const links = [
-    { name: "Inicio", href: "/home", requiresAuth: false, hideIfAuth: true },
+    { name: "Inicio", href: "/", requiresAuth: false, hideIfAuth: true },
     { name: "Películas", href: "/movies", requiresAuth: false },
     { name: "Categorías", href: "/categories", requiresAuth: false },
     { name: "Favoritos", href: "/favorites", requiresAuth: true },
