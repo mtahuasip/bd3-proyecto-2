@@ -71,7 +71,8 @@ export default async function Page() {
               <p className="text-muted-foreground text-sm">
                 Historial de streaming
               </p>
-              {session.streaming_history.length === 0 ? (
+              {session.streaming_history === null ||
+              session.streaming_history.length === 0 ? (
                 <Badge variant="outline" className="text-muted-foreground">
                   Vacío
                 </Badge>
