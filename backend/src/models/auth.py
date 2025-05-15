@@ -24,7 +24,7 @@ class AuthDAO(object):
         try:
             user_found = mongo.db.users.find_one({"email": email})
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
         if not user_found:

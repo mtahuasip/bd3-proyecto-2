@@ -10,7 +10,7 @@ class PlaylistDAO(object):
         try:
             return list(mongo.db.playlists.find())
         except PyMongoError as e:
-            print(f"Error de MongoDB: {e}")
+            print(f"❌ Error de MongoDB: {e}")
             api.abort(500, "Error interno del servidor")
 
     def get(self, id):
@@ -19,7 +19,7 @@ class PlaylistDAO(object):
         try:
             favorite_found = mongo.db.playlists.find_one({"_id": ObjectId(id)})
         except PyMongoError as e:
-            print(f"Error de MongoDB: {e}")
+            print(f"❌ Error de MongoDB: {e}")
             api.abort(500, "Error interno del servidor")
 
         if favorite_found:
@@ -46,7 +46,7 @@ class PlaylistDAO(object):
             return mongo.db.playlists.find_one({"_id": result.inserted_id})
 
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
     def update(self, id, data):
@@ -68,7 +68,7 @@ class PlaylistDAO(object):
 
             return mongo.db.playlists.find_one({"_id": ObjectId(id)})
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
     def delete(self, id):
@@ -78,7 +78,7 @@ class PlaylistDAO(object):
         try:
             mongo.db.playlists.delete_one({"_id": ObjectId(id)})
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
 

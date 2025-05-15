@@ -11,7 +11,7 @@ class UserDAO(object):
         try:
             return list(mongo.db.users.find())
         except PyMongoError as e:
-            print(f"Error de MongoDB: {e}")
+            print(f"❌ Error de MongoDB: {e}")
             api.abort(500, "Error interno del servidor")
 
     def get(self, id):
@@ -20,7 +20,7 @@ class UserDAO(object):
         try:
             user_found = mongo.db.users.find_one({"_id": ObjectId(id)})
         except PyMongoError as e:
-            print(f"Error de MongoDB: {e}")
+            print(f"❌ Error de MongoDB: {e}")
             api.abort(500, "Error interno del servidor")
 
         if user_found:
@@ -54,7 +54,7 @@ class UserDAO(object):
             return mongo.db.users.find_one({"_id": result.inserted_id})
 
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
     def update(self, id, data):
@@ -81,7 +81,7 @@ class UserDAO(object):
 
             return mongo.db.users.find_one({"_id": object_id})
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
     def delete(self, id):
@@ -91,21 +91,21 @@ class UserDAO(object):
         try:
             mongo.db.users.delete_one({"_id": ObjectId(id)})
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
     def get_user_by_email(self, email):
         try:
             return mongo.db.users.find_one({"email": email})
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
     def get_user_by_username(self, username):
         try:
             return mongo.db.users.find_one({"username": username})
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
     def update_login(self, email):
@@ -115,7 +115,7 @@ class UserDAO(object):
                 {"$set": {"last_login": datetime.now()}},
             )
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
     def update_password(self, email, new_password):
@@ -125,7 +125,7 @@ class UserDAO(object):
                 {"$set": {"password": generate_password_hash(new_password)}},
             )
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
 

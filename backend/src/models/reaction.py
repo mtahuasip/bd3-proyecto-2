@@ -10,7 +10,7 @@ class ReactionDAO(object):
         try:
             return list(mongo.db.reactions.find())
         except PyMongoError as e:
-            print(f"Error de MongoDB: {e}")
+            print(f"❌ Error de MongoDB: {e}")
             api.abort(500, "Error interno del servidor")
 
     def get(self, id):
@@ -19,7 +19,7 @@ class ReactionDAO(object):
         try:
             reaction_found = mongo.db.reactions.find_one({"_id": ObjectId(id)})
         except PyMongoError as e:
-            print(f"Error de MongoDB: {e}")
+            print(f"❌ Error de MongoDB: {e}")
             api.abort(500, "Error interno del servidor")
 
         if reaction_found:
@@ -42,7 +42,7 @@ class ReactionDAO(object):
             return mongo.db.reactions.find_one({"_id": result.inserted_id})
 
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
     def update(self, id, data):
@@ -62,7 +62,7 @@ class ReactionDAO(object):
 
             return mongo.db.reactions.find_one({"_id": ObjectId(id)})
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
     def delete(self, id):
@@ -72,7 +72,7 @@ class ReactionDAO(object):
         try:
             mongo.db.reactions.delete_one({"_id": ObjectId(id)})
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
 

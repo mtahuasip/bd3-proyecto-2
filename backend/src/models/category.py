@@ -11,7 +11,7 @@ class CategoryDAO(object):
         try:
             return list(mongo.db.categories.find())
         except PyMongoError as e:
-            print(f"Error de MongoDB: {e}")
+            print(f"❌ Error de MongoDB: {e}")
             api.abort(500, "Error interno del servidor")
 
     def get(self, id):
@@ -20,7 +20,7 @@ class CategoryDAO(object):
         try:
             category_found = mongo.db.categories.find_one({"_id": ObjectId(id)})
         except PyMongoError as e:
-            print(f"Error de MongoDB: {e}")
+            print(f"❌ Error de MongoDB: {e}")
             api.abort(500, "Error interno del servidor")
 
         if category_found:
@@ -42,7 +42,7 @@ class CategoryDAO(object):
             return mongo.db.categories.find_one({"_id": result.inserted_id})
 
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
     def update(self, id, data):
@@ -64,7 +64,7 @@ class CategoryDAO(object):
 
             return mongo.db.categories.find_one({"_id": ObjectId(id)})
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
     def delete(self, id):
@@ -74,7 +74,7 @@ class CategoryDAO(object):
         try:
             mongo.db.categories.delete_one({"_id": ObjectId(id)})
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
 

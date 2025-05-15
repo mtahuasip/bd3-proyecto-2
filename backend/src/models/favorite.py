@@ -10,7 +10,7 @@ class FavoriteDAO(object):
         try:
             return list(mongo.db.favorites.find())
         except PyMongoError as e:
-            print(f"Error de MongoDB: {e}")
+            print(f"❌ Error de MongoDB: {e}")
             api.abort(500, "Error interno del servidor")
 
     def get(self, id):
@@ -19,7 +19,7 @@ class FavoriteDAO(object):
         try:
             favorite_found = mongo.db.favorites.find_one({"_id": ObjectId(id)})
         except PyMongoError as e:
-            print(f"Error de MongoDB: {e}")
+            print(f"❌ Error de MongoDB: {e}")
             api.abort(500, "Error interno del servidor")
 
         if favorite_found:
@@ -43,7 +43,7 @@ class FavoriteDAO(object):
             return mongo.db.favorites.find_one({"_id": result.inserted_id})
 
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
     # def update(self, id, data):
@@ -63,7 +63,7 @@ class FavoriteDAO(object):
 
     #         return mongo.db.favorites.find_one({"_id": ObjectId(id)})
     #     except PyMongoError as e:
-    #         print(f"Error: {e}")
+    #         print(f"❌ Error: {e}")
     #         api.abort(500, "Error interno del servidor")
 
     def delete(self, id):
@@ -73,7 +73,7 @@ class FavoriteDAO(object):
         try:
             mongo.db.favorites.delete_one({"_id": ObjectId(id)})
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
 

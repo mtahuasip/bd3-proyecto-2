@@ -11,7 +11,7 @@ class MovieDAO(object):
         try:
             return list(mongo.db.movies.find())
         except PyMongoError as e:
-            print(f"Error de MongoDB: {e}")
+            print(f"❌ Error de MongoDB: {e}")
             api.abort(500, "Error interno del servidor")
 
     def get(self, id):
@@ -20,7 +20,7 @@ class MovieDAO(object):
         try:
             movie_found = mongo.db.movies.find_one({"_id": ObjectId(id)})
         except PyMongoError as e:
-            print(f"Error de MongoDB: {e}")
+            print(f"❌ Error de MongoDB: {e}")
             api.abort(500, "Error interno del servidor")
 
         if movie_found:
@@ -53,7 +53,7 @@ class MovieDAO(object):
             return mongo.db.movies.find_one({"_id": result.inserted_id})
 
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
     def update(self, id, data):
@@ -78,7 +78,7 @@ class MovieDAO(object):
 
             return mongo.db.movies.find_one({"_id": ObjectId(id)})
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
     def delete(self, id):
@@ -88,7 +88,7 @@ class MovieDAO(object):
         try:
             mongo.db.movies.delete_one({"_id": ObjectId(id)})
         except PyMongoError as e:
-            print(f"Error: {e}")
+            print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
 
