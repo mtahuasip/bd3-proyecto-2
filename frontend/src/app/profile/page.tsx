@@ -3,13 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getSession } from "@/lib/session";
-import { SessionUser } from "@/types/session";
 import { format } from "date-fns";
 import { CalendarIcon, LogInIcon, MailIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
 
 export default async function Page() {
-  const session: SessionUser = await getSession();
+  const session = await getSession();
 
   return (
     <section className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
@@ -26,7 +25,7 @@ export default async function Page() {
           <CardContent className="space-y-4">
             <div className="space-y-1">
               <p className="text-muted-foreground text-sm">Nombre de usuario</p>
-              <p className="text-lg font-medium">{session.username}</p>
+              <p className="text-lg font-medium">{session?.username}</p>
             </div>
 
             <Separator />
@@ -37,7 +36,7 @@ export default async function Page() {
               </p>
               <div className="flex items-center gap-2">
                 <MailIcon className="text-muted-foreground h-4 w-4" />
-                <p className="text-base">{session.email}</p>
+                <p className="text-base">{session?.email}</p>
               </div>
             </div>
 
@@ -48,7 +47,10 @@ export default async function Page() {
               <div className="flex items-center gap-2">
                 <CalendarIcon className="text-muted-foreground h-4 w-4" />
                 <p className="text-base">
-                  {format(new Date(session.created_at), "dd/MM/yyyy HH:mm")}
+                  {format(
+                    new Date(session?.created_at || new Date()),
+                    "dd/MM/yyyy HH:mm"
+                  )}
                 </p>
               </div>
             </div>
@@ -60,7 +62,10 @@ export default async function Page() {
               <div className="flex items-center gap-2">
                 <LogInIcon className="text-muted-foreground h-4 w-4" />
                 <p className="text-base">
-                  {format(new Date(session.last_login), "dd/MM/yyyy HH:mm")}
+                  {format(
+                    new Date(session?.last_login || new Date()),
+                    "dd/MM/yyyy HH:mm"
+                  )}
                 </p>
               </div>
             </div>
@@ -71,14 +76,14 @@ export default async function Page() {
               <p className="text-muted-foreground text-sm">
                 Historial de streaming
               </p>
-              {session.streaming_history === null ||
-              session.streaming_history.length === 0 ? (
+              {session?.streaming_history === null ||
+              session?.streaming_history.length === 0 ? (
                 <Badge variant="outline" className="text-muted-foreground">
                   Vacío
                 </Badge>
               ) : (
                 <ul className="list-inside list-disc">
-                  {session.streaming_history.map((item, idx) => (
+                  {session?.streaming_history.map((item, idx) => (
                     <li key={idx}>{item}</li>
                   ))}
                 </ul>

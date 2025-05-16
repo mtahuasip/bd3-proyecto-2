@@ -38,8 +38,14 @@ export const Footer = () => {
       </p>
 
       <div className="flex items-center justify-center gap-2">
-        <SocialLink href="https://facebook.com/grupo-15" Icon={Facebook} />
-        <SocialLink href="https://intagram.com/grupo-15" Icon={Instagram} />
+        <SocialLink
+          href="https://facebook.com/bd3-proyecto-2"
+          Icon={Facebook}
+        />
+        <SocialLink
+          href="https://intagram.com/bd3-proyecto-2"
+          Icon={Instagram}
+        />
         <SocialLink
           href="https://github.com/mtahuasip/bd3-proyecto-2"
           Icon={Github}

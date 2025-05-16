@@ -18,10 +18,7 @@ export default async function Home() {
           Naturales, Universidad Mayor de San Andrés.
         </p>
 
-        <Button
-          className="bg-blue-500 px-8 py-6 text-2xl text-white hover:bg-blue-600"
-          size="lg"
-        >
+        <Button size="lg">
           <Link href="/register">Suscribirse</Link>
         </Button>
       </section>

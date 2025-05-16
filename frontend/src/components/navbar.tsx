@@ -34,7 +34,7 @@ export const Navbar = async () => {
   });
 
   return (
-    <nav className="bg-background fixed top-0 right-0 left-0 z-10 px-16 py-6">
+    <nav className="bg-background fixed top-0 right-0 left-0 z-50 px-16 py-2">
       <div className="relative flex items-center justify-between">
         <h6>
           <Link className="text-4xl font-extrabold tracking-tighter" href="/">
@@ -84,7 +84,7 @@ export const Navbar = async () => {
               <Button variant="outline" size="lg">
                 <Link href="/login">Ingresar</Link>
               </Button>
-              <Button>
+              <Button size="lg">
                 <Link href="/register">Suscribirse</Link>
               </Button>
             </>
