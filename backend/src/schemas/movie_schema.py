@@ -23,3 +23,11 @@ movie = api.model(
         "updated_at": fields.DateTime(readonly=True),
     },
 )
+
+year = api.model(
+    "Year",
+    {
+        "id": fields.String(readonly=True),
+        "year": fields.Integer(readonly=True),
+    },
+)

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from bson import ObjectId
 from pymongo.errors import PyMongoError
 from slugify import slugify
@@ -89,6 +89,71 @@ class MovieDAO(object):
             mongo.db.movies.delete_one({"_id": ObjectId(id)})
         except PyMongoError as e:
             print(f"❌ Error: {e}")
+            api.abort(500, "Error interno del servidor")
+
+    def get_samples(self, limit):
+        try:
+            return list(mongo.db.movies.aggregate([{"$sample": {"size": limit}}]))
+        except PyMongoError as e:
+            print(f"❌ Error de MongoDB: {e}")
+            api.abort(500, "Error interno del servidor")
+
+    def get_recommended(self, limit):
+        try:
+            return list(mongo.db.movies.aggregate([{"$sample": {"size": limit}}]))
+        except PyMongoError as e:
+            print(f"❌ Error de MongoDB: {e}")
+            api.abort(500, "Error interno del servidor")
+
+    def get_most_viewed(self, timeframe, limit):
+        try:
+            now = datetime.now()
+
+            if timeframe == "day":
+                start_time = now - timedelta(days=1)
+            elif timeframe == "week":
+                start_time = now - timedelta(weeks=1)
+            elif timeframe == "month":
+                start_time = now - timedelta(days=30)
+            elif timeframe == "year":
+                start_time = now - timedelta(days=365)
+            else:
+                raise ValueError(
+                    "Timeframe inválido. Usa 'day', 'week', 'month' o 'year'"
+                )
+
+            start_iso = start_time.isoformat()
+            query = {
+                "$or": [
+                    {"created_at": {"$gte": start_time}},
+                    {"created_at": {"$gte": start_iso}},
+                ]
+            }
+
+            return list(mongo.db.movies.find(query).sort("views", -1).limit(limit))
+
+            # return list(
+            #     mongo.db.movies.find({"created_at": {"$gte": start_time}})
+            #     .sort("views", -1)
+            #     .limit(limit)
+            # )
+
+        except PyMongoError as e:
+            print(f"❌ Error de MongoDB: {e}")
+            api.abort(500, "Error interno del servidor")
+        except ValueError as e:
+            api.abort(400, str(e))
+
+    def get_years(self):
+        try:
+            years = mongo.db.movies.distinct("year")
+            years = [int(y) for y in years if y and str(y).isdigit()]
+            years.sort(reverse=True)
+            result = [{"id": str(y), "year": y} for y in years]
+
+            return result
+        except PyMongoError as e:
+            print(f"❌ Error de MongoDB: {e}")
             api.abort(500, "Error interno del servidor")
 
 
