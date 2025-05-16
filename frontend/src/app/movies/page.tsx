@@ -1,3 +1,5 @@
+import { InputCheckbox } from "@/components/input-checkbox";
+import { InputSearchForm } from "@/components/input-search-form";
 import { RecommendedCarousel } from "@/components/recommended-carousel";
 import { getSession } from "@/lib/session";
 import { getCategoriesRequest } from "@/services/categories";
@@ -12,7 +14,20 @@ export default async function Page() {
   const recommended = movies.slice(6, 10);
   const mostViewed = movies.slice(0, 5);
 
-  const movie = movies[0];
+  const seenYears = new Set();
+  const years: { _id: string; year: string }[] = [];
+
+  movies.forEach((movie) => {
+    const year = movie.year.toString();
+    if (!seenYears.has(year)) {
+      seenYears.add(year);
+      years.push({
+        _id: movie._id,
+        year,
+      });
+    }
+  });
+  years.sort((a, b) => Number(b.year) - Number(a.year));
 
   return (
     <section className="px-16">
@@ -62,14 +77,49 @@ export default async function Page() {
       )}
 
       <div
-        className={`grid grid-cols-5 grid-rows-1 gap-4 ${session ? "py-8" : "pt-20 pb-8"}`}
+        className={`grid grid-cols-6 grid-rows-1 gap-10 ${session ? "py-8" : "pt-20 pb-8"}`}
       >
-        <aside className="col-span-1 rounded-lg border p-4">
-          <h6 className="text-2xl font-bold">Buscar película</h6>
+        <aside className="col-span-2">
+          <h6 className="mt-4 text-2xl font-bold">Buscar película</h6>
+          <div className="mt-6 ml-6">
+            <InputSearchForm />
+          </div>
+
+          <h6 className="mt-4 text-2xl font-bold">Categorías</h6>
+          <div className="mt-4 ml-6 flex flex-col gap-2">
+            {categories.map((category) => (
+              <InputCheckbox
+                key={category._id}
+                id={category._id}
+                label={category.name}
+              />
+            ))}
+          </div>
+
+          <h6 className="mt-4 text-2xl font-bold">Año</h6>
+          <div className="mt-4 ml-6 flex flex-col gap-2">
+            {years.map((year) => (
+              <InputCheckbox key={year._id} id={year._id} label={year.year} />
+            ))}
+          </div>
         </aside>
 
         <section className="col-span-4">
-          <h2 className="text-4xl font-bold">Catalogo de películas</h2>
+          <h2 className="mb-6 text-4xl font-bold">Catalogo de películas</h2>
+
+          <div className="flex flex-wrap items-center justify-between gap-6">
+            {movies.map((movie) => (
+              <article key={movie._id}>
+                <Image
+                  className="h-72 w-52 rounded-md object-cover"
+                  src={movie.poster_url}
+                  alt={`Poster de la película ${movie.title}`}
+                  width={720}
+                  height={1080}
+                />
+              </article>
+            ))}
+          </div>
         </section>
       </div>
     </section>
