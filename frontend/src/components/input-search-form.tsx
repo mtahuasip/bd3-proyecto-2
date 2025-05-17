@@ -30,9 +30,7 @@ export function InputSearchForm() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
-  }
+  function onSubmit(data: z.infer<typeof FormSchema>) {}
 
   return (
     <Form {...form}>

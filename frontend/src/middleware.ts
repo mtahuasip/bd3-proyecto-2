@@ -29,11 +29,11 @@ export default async function middleware(req: NextRequest) {
 
   const session = await getSession();
 
-  if (isProtectedRoute && !session?._id) {
+  if (isProtectedRoute && !session) {
     return NextResponse.redirect(new URL("/login", req.nextUrl));
   }
 
-  if (isPublicRoute && session?._id && isPublicRestrictedWhenLoggedIn) {
+  if (isPublicRoute && session && isPublicRestrictedWhenLoggedIn) {
     return NextResponse.redirect(new URL("/movies", req.nextUrl));
   }
 

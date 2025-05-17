@@ -2,7 +2,9 @@ import { ThemeModeToggle } from "@/components/theme-mode-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { getSession } from "@/lib/session";
+import { getMe } from "@/services/auth";
 import Link from "next/link";
+import { toast } from "sonner";
 import { LogoutButton } from "./logout-button";
 import { NavLink } from "./nav-link";
 import { Button } from "./ui/button";
@@ -20,6 +22,15 @@ import {
 
 export const Navbar = async () => {
   const session = await getSession();
+
+  let me = null;
+  if (session) {
+    try {
+      me = await getMe(session ?? undefined);
+    } catch {
+      toast("Error al recuperar datos de usuario");
+    }
+  }
 
   const links = [
     { name: "Inicio", href: "/", requiresAuth: false, hideIfAuth: true },
@@ -59,14 +70,14 @@ export const Navbar = async () => {
                 <Avatar>
                   <AvatarImage
                     src="https://github.com/shadcn.png"
-                    alt={`User ${session.username} avatar`}
+                    alt={`User ${me?.username} avatar`}
                   />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem>
-                  <Link href="/profile">{session.username}</Link>
+                  <Link href="/profile">{me?.username}</Link>
                 </DropdownMenuItem>
                 <Separator />
                 <DropdownMenuItem>

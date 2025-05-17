@@ -1,3 +1,4 @@
+import { SessionUser } from "@/types/session";
 import apiRequest from "./api-request";
 
 export const registerRequest = (body: any) =>
@@ -6,7 +7,7 @@ export const registerRequest = (body: any) =>
 export const loginRequest = (body: any) =>
   apiRequest({ method: "POST", endpoint: "/auth/login", body });
 
-export const meRequest = (headers?: any) =>
+export const getMe = (headers?: Record<string, string>): Promise<SessionUser> =>
   apiRequest({ method: "GET", endpoint: "/auth/me", headers });
 
 export const updateProfileRequest = (body: any) =>
