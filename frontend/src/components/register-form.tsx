@@ -44,8 +44,8 @@ export const RegisterForm = ({
 
   const onSubmit = async (values: Register) => {
     try {
-      const response = await register(values);
-      toast(response.message);
+      await register(values);
+      toast("Cuenta creada con éxito, redirigiendo al la inicio...");
       window.location.href = "/movies";
     } catch {
       toast("Ocurrió un error inesperado");

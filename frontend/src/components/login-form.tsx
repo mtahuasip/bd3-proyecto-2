@@ -36,8 +36,8 @@ export function LoginForm({
 
   const onSubmit = async (values: Login) => {
     try {
-      const response = await login(values);
-      toast(response.message);
+      await login(values);
+      toast("Inicio de sesión exitoso");
       window.location.href = "/movies";
     } catch {
       toast("Ocurrió un error inesperado");
