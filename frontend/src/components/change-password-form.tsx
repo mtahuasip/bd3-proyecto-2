@@ -1,11 +1,11 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { changePasswordRequest } from "@/services/auth";
+import { changePassword } from "@/services/auth";
+import { ChangePassword, changePasswordSchema } from "@/types/auth.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 import { Button } from "./ui/button";
 import {
   Card,
@@ -24,39 +24,22 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 
-const formSchema = z
-  .object({
-    old_password: z
-      .string()
-      .min(8, "La contraseña debe tener mínimo 8 caracteres"),
-    new_password: z
-      .string()
-      .min(8, "La contraseña debe tener mínimo 8 caracteres"),
-    repeat_password: z
-      .string()
-      .min(8, "La contraseña debe tener mínimo 8 caracteres"),
-  })
-  .refine((data) => data.new_password === data.repeat_password, {
-    message: "Las contraseñas no coinciden",
-    path: ["repeat_password"],
-  });
-
 export function ChangePasswordForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<ChangePassword>({
+    resolver: zodResolver(changePasswordSchema),
     defaultValues: { old_password: "", new_password: "", repeat_password: "" },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: ChangePassword) => {
     try {
-      const response = await changePasswordRequest(values);
+      const response = await changePassword(values);
       toast(response.message);
       form.reset();
-    } catch (error: any) {
-      toast(error.message || "Ocurrió un error inesperado");
+    } catch {
+      toast("Ocurrió un error inesperado");
     }
   };
 

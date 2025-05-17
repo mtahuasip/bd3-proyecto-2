@@ -5,7 +5,7 @@ import { FC } from "react";
 
 interface InputCheckboxProps {
   id: string;
-  label: string;
+  label: string | number;
 }
 
 export const InputCheckbox: FC<InputCheckboxProps> = ({ id, label }) => {

@@ -1,12 +1,12 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { registerRequest } from "@/services/auth";
+import { register } from "@/services/auth";
+import { Register, registerSchema } from "@/types/auth.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 import { Button } from "./ui/button";
 import {
   Card,
@@ -25,31 +25,12 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 
-const formSchema = z
-  .object({
-    username: z.string().min(4, "El nombre de usuario es requerido"),
-    email: z
-      .string()
-      .min(4, "El correo es requerido")
-      .email("El correo es inválido")
-      .trim(),
-    password: z.string().min(8, "La contraseña debe tener mínimo 8 caracteres"),
-    repeat_password: z
-      .string()
-      .min(8, "La contraseña debe tener mínimo 8 caracteres"),
-    roles: z.array(z.string()),
-  })
-  .refine((data) => data.password === data.repeat_password, {
-    message: "Las contraseñas no coinciden",
-    path: ["repeat_password"],
-  });
-
 export const RegisterForm = ({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<Register>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       username: "",
       email: "",
@@ -61,13 +42,13 @@ export const RegisterForm = ({
     reValidateMode: "onChange",
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: Register) => {
     try {
-      const response = await registerRequest(values);
+      const response = await register(values);
       toast(response.message);
       window.location.href = "/movies";
-    } catch (error: any) {
-      toast(error.message || "Ocurrió un error inesperado");
+    } catch {
+      toast("Ocurrió un error inesperado");
     }
   };
 

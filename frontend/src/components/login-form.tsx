@@ -1,12 +1,12 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { loginRequest } from "@/services/auth";
+import { login } from "@/services/auth";
+import { Login, loginSchema } from "@/types/auth.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 import { Button } from "./ui/button";
 import {
   Card,
@@ -25,31 +25,22 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 
-const formSchema = z.object({
-  email: z
-    .string()
-    .min(4, "El correo es requerido")
-    .email("El correo es inválido")
-    .trim(),
-  password: z.string().min(8, "La contraseña debe tener mínimo 8 caracteres"),
-});
-
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<Login>({
+    resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: Login) => {
     try {
-      const response = await loginRequest(values);
+      const response = await login(values);
       toast(response.message);
       window.location.href = "/movies";
-    } catch (error: any) {
-      toast(error.message || "Ocurrió un error inesperado");
+    } catch {
+      toast("Ocurrió un error inesperado");
     }
   };
 

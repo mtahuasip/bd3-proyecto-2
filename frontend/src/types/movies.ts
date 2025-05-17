@@ -17,4 +17,17 @@ export const movieSchema = z.object({
   updated_at: z.string().datetime(),
 });
 
+export const yearSchema = z.object({
+  id: z.string(),
+  year: z.number(),
+});
+
+export const enum TimeFrame {
+  DAY = "day",
+  WEEK = "week",
+  MONTH = "month",
+  YEAR = "year",
+}
+
 export type Movie = z.infer<typeof movieSchema>;
+export type Year = z.infer<typeof yearSchema>;

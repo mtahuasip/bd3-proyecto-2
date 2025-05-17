@@ -73,7 +73,7 @@ export const RecommendedCarousel: FC<RecommendedCarouselProps> = ({
       <Carousel
         setApi={setCarouselApi}
         opts={{ loop: true }}
-        plugins={[Autoplay({ delay: 5000 }), Fade()]}
+        plugins={[Autoplay({ delay: 10000 }), Fade()]}
       >
         <CarouselContent>
           {movies.map((movie) => (

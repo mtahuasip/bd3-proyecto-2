@@ -1,11 +1,11 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { updateProfileRequest } from "@/services/auth";
+import { updateProfile } from "@/services/auth";
+import { UpdateProfile, updateProfileSchema } from "@/types/auth.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 import { Button } from "./ui/button";
 import {
   Card,
@@ -24,15 +24,6 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 
-const formSchema = z.object({
-  username: z.string().min(1, "El nombre de usuario es requerido").trim(),
-  email: z
-    .string()
-    .min(4, "El correo es requerido")
-    .email("El correo es inválido")
-    .trim(),
-});
-
 interface UpdateProfileFormProps extends React.ComponentPropsWithoutRef<"div"> {
   defaultValues: {
     username: string;
@@ -45,18 +36,18 @@ export function UpdateProfileForm({
   defaultValues,
   ...props
 }: UpdateProfileFormProps) {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<UpdateProfile>({
+    resolver: zodResolver(updateProfileSchema),
     defaultValues,
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: UpdateProfile) => {
     try {
-      const response = await updateProfileRequest(values);
+      await updateProfile(values);
       toast("Datos actualizados con éxito");
       window.location.href = "/profile";
-    } catch (error: any) {
-      toast(error.message || "Ocurrió un error inesperado");
+    } catch {
+      toast("Ocurrió un error inesperado");
     }
   };
 

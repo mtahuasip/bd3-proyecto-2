@@ -1,7 +1,7 @@
 "use client";
 
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { logoutRequest } from "@/services/auth";
+import { logout } from "@/services/auth";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -10,11 +10,11 @@ export const LogoutButton = () => {
 
   const handleLogout = async () => {
     try {
-      await logoutRequest();
+      await logout();
       toast("Sesión cerrada correctamente");
       router.refresh();
-    } catch (error: any) {
-      toast(error.message || "Error al cerrar sesión");
+    } catch {
+      toast("Ocurrió un error inesperado");
     }
   };
 
