@@ -3,11 +3,11 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 interface FetchOptions {
   method?: "GET" | "POST" | "PATCH" | "DELETE";
   endpoint: string;
-  body?: any;
+  body?: unknown;
   headers?: Record<string, string>;
 }
 
-const apiRequest = async <T = any>({
+const apiRequest = async <T = unknown>({
   method = "GET",
   endpoint,
   body,

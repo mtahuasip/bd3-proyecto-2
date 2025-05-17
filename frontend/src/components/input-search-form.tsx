@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 const FormSchema = z.object({
   query: z.string().min(2, {
@@ -30,7 +31,9 @@ export function InputSearchForm() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {}
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    toast(JSON.stringify(data));
+  }
 
   return (
     <Form {...form}>
