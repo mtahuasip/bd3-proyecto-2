@@ -126,3 +126,73 @@ class Years(Resource):
     def get(self):
         """Devuelve años de películas"""
         return movie_dao.get_years()
+    
+    
+@ns.route("/<string:id>/like")
+class LikeMovie(Resource):
+    @jwt_required()
+    @roles_required("admin", "staff", "user")
+    def post(self, id):
+        """Agrega un like a una película"""
+        from flask_jwt_extended import get_jwt_identity
+        movie_dao.like_movie(id, get_jwt_identity())
+        movie_dao.increment_popularity(id)
+        return {"msg": "Like registrado"}
+
+@ns.route("/<string:id>/dislike")
+class DislikeMovie(Resource):
+    @jwt_required()
+    @roles_required("admin", "staff", "user")
+    def post(self, id):
+        """Agrega un dislike a una película"""
+        from flask_jwt_extended import get_jwt_identity
+        movie_dao.dislike_movie(id, get_jwt_identity())
+        return {"msg": "Dislike registrado"}
+
+@ns.route("/<string:id>/likes")
+class MovieLikes(Resource):
+    @jwt_required()
+    @roles_required("admin", "staff", "user")
+    def get(self, id):
+        """Obtiene los likes/dislikes de una película"""
+        return movie_dao.get_likes_dislikes(id)
+
+
+@ns.route("/favorites/<string:movie_id>")
+class UserFavorites(Resource):
+    @jwt_required()
+    @roles_required("admin", "staff", "user")
+    def post(self, movie_id):
+        """Agrega una película a favoritos"""
+        from flask_jwt_extended import get_jwt_identity
+        movie_dao.add_to_favorites(get_jwt_identity(), movie_id)
+        return {"msg": "Película agregada a favoritos"}
+
+    @jwt_required()
+    @roles_required("admin", "staff", "user")
+    def delete(self, movie_id):
+        """Elimina una película de favoritos"""
+        from flask_jwt_extended import get_jwt_identity
+        movie_dao.remove_from_favorites(get_jwt_identity(), movie_id)
+        return {"msg": "Película eliminada de favoritos"}
+
+@ns.route("/favorites")
+class GetFavorites(Resource):
+    @jwt_required()
+    @roles_required("admin", "staff", "user")
+    def get(self):
+        """Obtiene películas favoritas del usuario"""
+        from flask_jwt_extended import get_jwt_identity
+        return movie_dao.get_favorites(get_jwt_identity())
+
+@ns.route("/popular")
+class PopularMovies(Resource):
+    @ns.doc(params={"limit": "Cantidad de resultados"})
+    @ns.expect(parser)
+    @jwt_required()
+    @roles_required("admin", "staff", "user")
+    def get(self):
+        """Películas más populares según ranking Redis"""
+        args = parser.parse_args()
+        return movie_dao.get_popular_movies(args["limit"])
+

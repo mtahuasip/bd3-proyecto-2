@@ -1,7 +1,7 @@
 from datetime import datetime
 from bson import ObjectId
 from pymongo.errors import PyMongoError
-from src.extensions import api, mongo
+from src.extensions import api, mongo, redis
 from src.utils.utils import verify_id
 
 
@@ -38,7 +38,13 @@ class FavoriteDAO(object):
                 "created_at": datetime.now(),
                 "updated_at": datetime.now(),
             }
+
             result = mongo.db.favorites.insert_one(new_favorite)
+
+            # === REDIS ===
+            user_id = data["user"]
+            for movie_id in data["movies"]:
+                redis.sadd(f"user:{user_id}:favorites", movie_id)
 
             return mongo.db.favorites.find_one({"_id": result.inserted_id})
 
@@ -46,32 +52,18 @@ class FavoriteDAO(object):
             print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
-    # def update(self, id, data):
-    #     verify_id(id, api)
-    #     self.get(id)
-
-    #     try:
-    #         favorite_update = {
-    #             "movies": data["movies"],
-    #             "updated_at": datetime.now(),
-    #         }
-
-    #         mongo.db.favorites.update_one(
-    #             {"_id": ObjectId(id)},
-    #             {"$set": favorite_update},
-    #         )
-
-    #         return mongo.db.favorites.find_one({"_id": ObjectId(id)})
-    #     except PyMongoError as e:
-    #         print(f"❌ Error: {e}")
-    #         api.abort(500, "Error interno del servidor")
-
     def delete(self, id):
         verify_id(id, api)
-        self.get(id)
+        fav = self.get(id)
 
         try:
             mongo.db.favorites.delete_one({"_id": ObjectId(id)})
+
+            # === REDIS ===
+            user_id = fav["user"]
+            for movie_id in fav["movies"]:
+                redis.srem(f"user:{user_id}:favorites", movie_id)
+
         except PyMongoError as e:
             print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
