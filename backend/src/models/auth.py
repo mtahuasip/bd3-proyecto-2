@@ -1,7 +1,7 @@
-from flask import jsonify
+from datetime import timedelta
 from pymongo.errors import PyMongoError
 from werkzeug.security import check_password_hash
-from flask_jwt_extended import create_access_token, set_access_cookies
+from flask_jwt_extended import create_access_token, create_refresh_token
 from src.extensions import api, mongo
 from .user import user_dao
 
@@ -34,19 +34,45 @@ class AuthDAO(object):
         if not is_valid:
             api.abort(401, "Credenciales inválidas")
 
-        response = jsonify({"message": "Inicio de sesión exitoso"})
         access_token = create_access_token(
             identity=user_found["email"],
+            expires_delta=timedelta(minutes=15),
+            fresh=True,
             additional_claims={"roles": user_found["roles"]},
+        )
+
+        refresh_token = create_refresh_token(
+            identity=user_found["email"],
+            expires_delta=timedelta(days=30),
         )
 
         user_dao.update_login(user_found["email"])
 
-        set_access_cookies(response, access_token)
+        return {
+            "message": "Inicio de sesión exitoso",
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+        }
 
-        return response
+    def refresh_token(self, current_user):
+        user_found = user_dao.get_user_by_email(email=current_user)
 
-    def me(self, current_user):
+        if not user_found:
+            api.abort(404, "Usuario no encontrado")
+
+        access_token = create_access_token(
+            identity=user_found["email"],
+            expires_delta=timedelta(minutes=15),
+            fresh=False,
+            additional_claims={"roles": user_found["roles"]},
+        )
+
+        return {
+            "message": "Token actualizado correctamente",
+            "access_token": access_token,
+        }
+
+    def profile(self, current_user):
         user_found = user_dao.get_user_by_email(email=current_user)
 
         if not user_found:

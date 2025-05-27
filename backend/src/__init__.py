@@ -3,7 +3,6 @@ from flask_cors import CORS
 from .config import Config
 from .utils.connections.mongo import init_mongo
 from .utils.connections.redis import init_redis
-from .utils.security.jwt import refresh_expiring_jwts
 from .extensions import api, jwt
 from .resources import namespaces
 
@@ -11,9 +10,8 @@ from .resources import namespaces
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
-    app.after_request(refresh_expiring_jwts)
 
-    CORS(app, supports_credentials=True, origins=Config.ORIGINS)
+    CORS(app, origins=Config.ORIGINS)
 
     init_redis(app)
     init_mongo(app)

@@ -32,15 +32,12 @@ class UserDAO(object):
         if len(data["roles"]) == 0:
             api.abort(400, "El campo 'roles' no puede ser una lista vacía")
 
-        if self.get_user_by_username(data["username"]):
-            api.abort(400, "Nombre de usuario ya existe")
-
         if self.get_user_by_email(data["email"]):
             api.abort(400, "Email ya existe")
 
         try:
             new_user = {
-                "username": data["username"],
+                "username": data["username"].title().strip(),
                 "email": data["email"],
                 "password": generate_password_hash(data["password"]),
                 "roles": data["roles"],
@@ -61,10 +58,6 @@ class UserDAO(object):
         verify_id(id, api)
         self.get(id)
         object_id = ObjectId(id)
-
-        user_with_same_username = self.get_user_by_username(data["username"])
-        if user_with_same_username and user_with_same_username["_id"] != object_id:
-            api.abort(400, "Nombre de usuario ya existe")
 
         user_with_same_email = self.get_user_by_email(data["email"])
         if user_with_same_email and user_with_same_email["_id"] != object_id:
@@ -97,13 +90,6 @@ class UserDAO(object):
     def get_user_by_email(self, email):
         try:
             return mongo.db.users.find_one({"email": email})
-        except PyMongoError as e:
-            print(f"❌ Error: {e}")
-            api.abort(500, "Error interno del servidor")
-
-    def get_user_by_username(self, username):
-        try:
-            return mongo.db.users.find_one({"username": username})
         except PyMongoError as e:
             print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")

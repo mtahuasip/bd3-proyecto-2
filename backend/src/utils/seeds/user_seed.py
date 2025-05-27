@@ -5,13 +5,13 @@ from src.config import Config
 
 
 def create_admin_user():
-    email = "admin@mail.com"
+    email = "admin@bd3.dev"
     password = Config.USERS_PASSWORD
 
     try:
         existing = mongo.db.users.find_one({"email": email})
         if existing:
-            print("⚠️ Usuario administrador ya existe.")
+            print(f"⚠️ Usuario administrador ya existe.\n📧 email: {email}")
             return
 
         hashed_password = generate_password_hash(password)
@@ -24,6 +24,6 @@ def create_admin_user():
             }
         )
 
-        print("✅ Usuario admin creado correctamente.")
+        print(f"✅ Usuario admin creado correctamente.\n📧 email: {email}")
     except PyMongoError as e:
         print(f"❌ Error al crear usuario admin: {e}")

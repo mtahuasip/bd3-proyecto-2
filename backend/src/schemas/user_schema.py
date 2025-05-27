@@ -4,7 +4,10 @@ from src.extensions import api
 user_input = api.model(
     "UserInput",
     {
-        "username": fields.String(required=True, pattern=r"^[a-zA-Z0-9_]+$"),
+        "username": fields.String(
+            required=True,
+            pattern=r"^[A-Za-zÁÉÍÓÚáéíóúÑñ]+(?: [A-Za-zÁÉÍÓÚáéíóúÑñ]+){1,3}$",
+        ),
         "email": fields.String(required=True, pattern=r"^[\w\.-]+@[\w\.-]+\.\w+$"),
         "password": fields.String(
             required=True,

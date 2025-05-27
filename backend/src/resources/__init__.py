@@ -8,12 +8,12 @@ from .user_resource import ns as user
 from .auth_resource import ns as auth
 
 namespaces = [
-    movies,
+    auth,
     category,
     comment,
     favorite,
+    movies,
     playlist,
     reaction,
     user,
-    auth,
 ]
