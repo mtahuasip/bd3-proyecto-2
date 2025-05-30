@@ -36,7 +36,7 @@ class AuthDAO(object):
 
         access_token = create_access_token(
             identity=user_found["email"],
-            expires_delta=timedelta(minutes=15),
+            expires_delta=timedelta(days=1),
             fresh=True,
             additional_claims={"roles": user_found["roles"]},
         )
@@ -62,7 +62,7 @@ class AuthDAO(object):
 
         access_token = create_access_token(
             identity=user_found["email"],
-            expires_delta=timedelta(minutes=15),
+            expires_delta=timedelta(days=1),
             fresh=False,
             additional_claims={"roles": user_found["roles"]},
         )
