@@ -1,0 +1,31 @@
+.video {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center; /* Centra verticalmente */
+  justify-content: center; /* Centra horizontalmente */
+}
+
+.pelicula {
+  width: 90%; /* Ajusta el ancho del contenedor según lo necesites */
+  height: 90%; /* Ajusta el alto del contenedor según lo necesites */
+  display: flex;
+  justify-content: center; /* Centra el video dentro del contenedor */
+  align-items: center; /* Centra el video dentro del contenedor */
+}
+
+.pelicula {
+  position: relative;
+  width: 90%;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pelicula iframe {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
