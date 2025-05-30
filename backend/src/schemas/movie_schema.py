@@ -19,6 +19,7 @@ movie = api.model(
         "thumbnail_url": fields.String(readonly=True),
         "video_url": fields.String(readonly=True),
         "slug": fields.String(readonly=True),
+        "last_view": fields.DateTime(readonly=True),
         "created_at": fields.DateTime(readonly=True),
         "updated_at": fields.DateTime(readonly=True),
     },

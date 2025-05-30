@@ -7,9 +7,28 @@ from src.utils.security.decorators import roles_required
 
 ns = Namespace("movies")
 
-parser = reqparse.RequestParser()
-parser.add_argument(
+limit_args = reqparse.RequestParser()
+limit_args.add_argument(
     "limit", type=int, default=5, help="Limite de resultados para devolver"
+)
+
+movies_args = reqparse.RequestParser()
+movies_args.add_argument("title", type=str, help="Filtrar por título de la película")
+movies_args.add_argument(
+    "categories",
+    type=str,
+    help="Filtrar por categoría (ej: Comedia, Aventura)",
+)
+movies_args.add_argument("year", type=int, help="Filtrar por año de la película")
+movies_args.add_argument(
+    "page",
+    type=int,
+    help="Número de página para paginación (10 resultados por página)",
+)
+movies_args.add_argument(
+    "per_page",
+    type=int,
+    help="Número de resultados por página (default: 10)",
 )
 
 
@@ -20,9 +39,17 @@ class MovieList(Resource):
     @jwt_required()
     @roles_required("admin", "staff", "user")
     @ns.marshal_list_with(movie)
+    @ns.expect(movies_args)
     def get(self):
         """Devuelve todos las películas"""
-        return movie_dao.get_all()
+        args = movies_args.parse_args()
+        return movie_dao.get_all(
+            title=args.get("title"),
+            categories=args.get("categories"),
+            year=args.get("year"),
+            page=args.get("page"),
+            per_page=args.get("per_page"),
+        )
 
     @ns.doc("create_movie")
     @jwt_required()
@@ -72,32 +99,29 @@ class Recommended(Resource):
         "get_recommended",
         params={"limit": "Limite de resultados para devolver (ejemplo 5, 10, 20)"},
     )
-    @ns.expect(parser)
+    @ns.expect(limit_args)
     @jwt_required()
     @roles_required("admin", "staff", "user")
     @ns.marshal_list_with(movie)
     def get(self):
         """Devuelve películas recomendadas"""
-        args = parser.parse_args()
+        args = limit_args.parse_args()
         limit = args["limit"]
         return movie_dao.get_recommended(limit)
 
 
 @ns.route("/most-viewed/<string:timeframe>")
-@ns.doc(params={"timeframe": "Timeframe. Usa 'day', 'week', 'month' o 'year'"})
+@ns.doc(params={"timeframe": "Timeframe. Usa 'day', 'week', 'month', 'year', 'all'"})
 @ns.response(404, "Películas no encontradas")
 class MostViewed(Resource):
-    @ns.doc(
-        "get_most_viewed",
-        params={"limit": "Limite de resultados para devolver (ejemplo 5, 10, 20)"},
-    )
-    @ns.expect(parser)
+    @ns.doc("get_most_viewed")
+    @ns.expect(limit_args)
     @jwt_required()
     @roles_required("admin", "staff", "user")
     @ns.marshal_list_with(movie)
     def get(self, timeframe):
         """Devuelve películas recomendadas"""
-        args = parser.parse_args()
+        args = limit_args.parse_args()
         limit = args["limit"]
         return movie_dao.get_most_viewed(timeframe, limit)
 
@@ -105,15 +129,12 @@ class MostViewed(Resource):
 @ns.route("/samples")
 @ns.response(404, "Películas no encontradas")
 class Samples(Resource):
-    @ns.doc(
-        "get_sample",
-        params={"limit": "Limite de resultados para devolver (ejemplo 5, 10, 20)"},
-    )
-    @ns.expect(parser)
+    @ns.doc("get_sample")
+    @ns.expect(limit_args)
     @ns.marshal_list_with(movie)
     def get(self):
         """Devuelve películas de ejemplo"""
-        args = parser.parse_args()
+        args = limit_args.parse_args()
         limit = args["limit"]
         return movie_dao.get_samples(limit)
 
@@ -126,8 +147,44 @@ class Years(Resource):
     def get(self):
         """Devuelve años de películas"""
         return movie_dao.get_years()
-    
-    
+
+
+@ns.route("/by/<string:slug>")
+@ns.response(404, "Película no encontrada")
+class MovieBySlug(Resource):
+    @ns.doc("get_movie_by_slug")
+    @jwt_required()
+    @roles_required("admin", "staff", "user")
+    @ns.marshal_with(movie)
+    def get(self, slug):
+        """Devuelve la película con el slug proporcionado"""
+        return movie_dao.get_by_slug(slug)
+
+
+@ns.route("/update-views/<string:id>")
+@ns.response(404, "Película no encontrada")
+class UpdateMovieViews(Resource):
+    @ns.doc("update_movie_view")
+    @jwt_required()
+    @roles_required("admin", "staff", "user")
+    @ns.marshal_with(movie)
+    def patch(self, id):
+        """Actualiza la última vista de la película con el id proporcionado"""
+        return movie_dao.update_last_views(id)
+
+
+@ns.route("/update-views/by/<string:slug>")
+@ns.response(404, "Película no encontrada")
+class UpdateMovieViews(Resource):
+    @ns.doc("update_movie_view")
+    @jwt_required()
+    @roles_required("admin", "staff", "user")
+    @ns.marshal_with(movie)
+    def patch(self, slug):
+        """Actualiza la última vista de la película con el slug proporcionado"""
+        return movie_dao.update_last_views_by_slug(slug)
+
+
 @ns.route("/<string:id>/like")
 class LikeMovie(Resource):
     @jwt_required()
@@ -135,9 +192,11 @@ class LikeMovie(Resource):
     def post(self, id):
         """Agrega un like a una película"""
         from flask_jwt_extended import get_jwt_identity
+
         movie_dao.like_movie(id, get_jwt_identity())
         movie_dao.increment_popularity(id)
         return {"msg": "Like registrado"}
+
 
 @ns.route("/<string:id>/dislike")
 class DislikeMovie(Resource):
@@ -146,8 +205,10 @@ class DislikeMovie(Resource):
     def post(self, id):
         """Agrega un dislike a una película"""
         from flask_jwt_extended import get_jwt_identity
+
         movie_dao.dislike_movie(id, get_jwt_identity())
         return {"msg": "Dislike registrado"}
+
 
 @ns.route("/<string:id>/likes")
 class MovieLikes(Resource):
@@ -165,6 +226,7 @@ class UserFavorites(Resource):
     def post(self, movie_id):
         """Agrega una película a favoritos"""
         from flask_jwt_extended import get_jwt_identity
+
         movie_dao.add_to_favorites(get_jwt_identity(), movie_id)
         return {"msg": "Película agregada a favoritos"}
 
@@ -173,8 +235,10 @@ class UserFavorites(Resource):
     def delete(self, movie_id):
         """Elimina una película de favoritos"""
         from flask_jwt_extended import get_jwt_identity
+
         movie_dao.remove_from_favorites(get_jwt_identity(), movie_id)
         return {"msg": "Película eliminada de favoritos"}
+
 
 @ns.route("/favorites")
 class GetFavorites(Resource):
@@ -183,16 +247,17 @@ class GetFavorites(Resource):
     def get(self):
         """Obtiene películas favoritas del usuario"""
         from flask_jwt_extended import get_jwt_identity
+
         return movie_dao.get_favorites(get_jwt_identity())
+
 
 @ns.route("/popular")
 class PopularMovies(Resource):
     @ns.doc(params={"limit": "Cantidad de resultados"})
-    @ns.expect(parser)
+    @ns.expect(limit_args)
     @jwt_required()
     @roles_required("admin", "staff", "user")
     def get(self):
         """Películas más populares según ranking Redis"""
-        args = parser.parse_args()
+        args = limit_args.parse_args()
         return movie_dao.get_popular_movies(args["limit"])
-
