@@ -1,4 +1,4 @@
-from flask_restx import Namespace, Resource, reqparse
+from flask_restx import Namespace, Resource, reqparse, fields
 from flask_jwt_extended import jwt_required
 from src.extensions import api
 from src.models.movie import movie_dao
@@ -124,6 +124,24 @@ class MostViewed(Resource):
         args = limit_args.parse_args()
         limit = args["limit"]
         return movie_dao.get_most_viewed(timeframe, limit)
+
+
+@ns.route("/total-pages")
+class TotalPages(Resource):
+    @ns.doc("get_total_pages")
+    @jwt_required()
+    @roles_required("admin", "staff", "user")
+    @ns.expect(movies_args)
+    @ns.marshal_with(api.model("Pages", {"total_pages": fields.Integer(readonly=True)}))
+    def get(self):
+        """Devuelve total de paginas de acuerdo a los items"""
+        args = movies_args.parse_args()
+        return movie_dao.get_total_pages(
+            title=args.get("title"),
+            categories=args.get("categories"),
+            year=args.get("year"),
+            per_page=args.get("per_page"),
+        )
 
 
 @ns.route("/samples")

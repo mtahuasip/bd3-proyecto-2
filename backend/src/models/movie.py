@@ -7,22 +7,30 @@ from src.utils.utils import verify_id
 from src.extensions import redis
 
 
+def build_filter_query(title=None, categories=None, year=None):
+    filter_query = {}
+
+    if title:
+        filter_query["title"] = {"$regex": title, "$options": "i"}
+
+    if categories:
+        if isinstance(categories, str) and "," in categories:
+            categories = [c.strip() for c in categories.split(",") if c.strip()]
+        if isinstance(categories, list):
+            filter_query["categories"] = {"$in": categories}
+        else:
+            filter_query["categories"] = {"$regex": categories, "$options": "i"}
+
+    if year:
+        filter_query["year"] = str(year)
+
+    return filter_query
+
+
 class MovieDAO(object):
     def get_all(self, title=None, categories=None, year=None, page=None, per_page=None):
         try:
-            filter_query = {}
-
-            if title:
-                filter_query["title"] = {"$regex": title, "$options": "i"}
-
-            if categories:
-                if isinstance(categories, list):
-                    filter_query["categories"] = {"$in": categories}
-                else:
-                    filter_query["categories"] = {"$regex": categories, "$options": "i"}
-
-            if year:
-                filter_query["year"] = str(year)
+            filter_query = build_filter_query(title, categories, year)
 
             if page is not None and page > 0:
                 items_per_page = per_page if per_page and per_page > 0 else 10
@@ -234,6 +242,19 @@ class MovieDAO(object):
             return mongo.db.movies.find_one({"slug": slug})
         except PyMongoError as e:
             print(f"❌ Error: {e}")
+            api.abort(500, "Error interno del servidor")
+
+    def get_total_pages(self, title=None, categories=None, year=None, per_page=None):
+        try:
+            filter_query = build_filter_query(title, categories, year)
+
+            total_items = mongo.db.movies.count_documents(filter_query)
+            items_per_page = per_page if per_page and per_page > 0 else 10
+            total_pages = (total_items + items_per_page - 1) // items_per_page
+            return {"total_pages": total_pages}
+
+        except PyMongoError as e:
+            print(f"❌ Error de MongoDB: {e}")
             api.abort(500, "Error interno del servidor")
 
     def like_movie(self, movie_id, user_id):
