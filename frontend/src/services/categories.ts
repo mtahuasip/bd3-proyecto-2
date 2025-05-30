@@ -1,10 +1,10 @@
-import { Category } from "@/types/category";
-import apiRequest from "./api-request";
+import api from "@/lib/fetch";
+import { Category } from "@/types/category.types";
 
-export const getCategories = (
-  headers?: Record<string, string>
+export const getCategories = async (): Promise<Category[]> =>
+  await api({ endpoint: "/categories" });
+
+export const getCategoriesSamples = async (
+  limit: number
 ): Promise<Category[]> =>
-  apiRequest({ method: "GET", endpoint: "/categories", headers });
-
-export const getCategoriesSamples = (limit: number): Promise<Category[]> =>
-  apiRequest({ method: "GET", endpoint: `/categories/samples?limit=${limit}` });
+  await api({ endpoint: `/categories/samples?limit=${limit}` });

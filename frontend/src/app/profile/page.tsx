@@ -3,22 +3,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getSession } from "@/lib/session";
-import { getMe } from "@/services/auth";
+import { profile } from "@/services/auth";
+import { SessionUser } from "@/types/session.types";
 import { format } from "date-fns";
 import { CalendarIcon, LogInIcon, MailIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
-import { toast } from "sonner";
 
 export default async function Page() {
   const session = await getSession();
 
-  let me = null;
-  if (session) {
-    try {
-      me = await getMe(session ?? undefined);
-    } catch {
-      toast("Error al recuperar datos de usuario");
-    }
+  let user: SessionUser | null = null;
+
+  try {
+    if (session) user = await profile();
+  } catch (error) {
+    console.log(error);
   }
 
   return (
@@ -36,7 +35,7 @@ export default async function Page() {
           <CardContent className="space-y-4">
             <div className="space-y-1">
               <p className="text-muted-foreground text-sm">Nombre de usuario</p>
-              <p className="text-lg font-medium">{me?.username}</p>
+              <p className="text-lg font-medium capitalize">{user?.username}</p>
             </div>
 
             <Separator />
@@ -47,7 +46,7 @@ export default async function Page() {
               </p>
               <div className="flex items-center gap-2">
                 <MailIcon className="text-muted-foreground h-4 w-4" />
-                <p className="text-base">{me?.email}</p>
+                <p className="text-base">{user?.email}</p>
               </div>
             </div>
 
@@ -59,7 +58,7 @@ export default async function Page() {
                 <CalendarIcon className="text-muted-foreground h-4 w-4" />
                 <p className="text-base">
                   {format(
-                    new Date(me?.created_at || new Date()),
+                    new Date(user?.created_at || new Date()),
                     "dd/MM/yyyy HH:mm"
                   )}
                 </p>
@@ -74,7 +73,7 @@ export default async function Page() {
                 <LogInIcon className="text-muted-foreground h-4 w-4" />
                 <p className="text-base">
                   {format(
-                    new Date(me?.last_login || new Date()),
+                    new Date(user?.last_login || new Date()),
                     "dd/MM/yyyy HH:mm"
                   )}
                 </p>
@@ -87,14 +86,14 @@ export default async function Page() {
               <p className="text-muted-foreground text-sm">
                 Historial de streaming
               </p>
-              {me?.streaming_history === null ||
-              me?.streaming_history.length === 0 ? (
+              {user?.streaming_history === null ||
+              user?.streaming_history.length === 0 ? (
                 <Badge variant="outline" className="text-muted-foreground">
                   Vacío
                 </Badge>
               ) : (
                 <ul className="list-inside list-disc">
-                  {me?.streaming_history.map((item, idx) => (
+                  {user?.streaming_history.map((item, idx) => (
                     <li key={idx}>{item}</li>
                   ))}
                 </ul>

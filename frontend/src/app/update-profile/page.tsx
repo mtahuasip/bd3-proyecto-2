@@ -1,18 +1,17 @@
 import { UpdateProfileForm } from "@/components/update-profile-form";
 import { getSession } from "@/lib/session";
-import { getMe } from "@/services/auth";
-import { toast } from "sonner";
+import { profile } from "@/services/auth";
+import { SessionUser } from "@/types/session.types";
 
 export default async function Page() {
   const session = await getSession();
 
-  let me = null;
-  if (session) {
-    try {
-      me = await getMe(session ?? undefined);
-    } catch {
-      toast("Error al recuperar datos de usuario");
-    }
+  let user: SessionUser | null = null;
+
+  try {
+    if (session) user = await profile();
+  } catch (error) {
+    console.log(error);
   }
 
   return (
@@ -20,8 +19,8 @@ export default async function Page() {
       <div className="w-full max-w-sm">
         <UpdateProfileForm
           defaultValues={{
-            username: me?.username || "Cargando...",
-            email: me?.email || "Cargando...",
+            username: user?.username || "Username",
+            email: user?.email || "m@mail.com",
           }}
         />
       </div>

@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+export const TokenResponseSchema = z.object({
+  message: z.string(),
+  access_token: z.string(),
+  refresh_token: z.string().optional(),
+});
+
 export const SessionUserSchema = z.object({
   _id: z.string().optional(),
   username: z.string(),
@@ -12,3 +18,4 @@ export const SessionUserSchema = z.object({
 });
 
 export type SessionUser = z.infer<typeof SessionUserSchema>;
+export type TokenResponse = z.infer<typeof TokenResponseSchema>;

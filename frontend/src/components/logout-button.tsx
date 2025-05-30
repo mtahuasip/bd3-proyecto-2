@@ -1,24 +1,34 @@
 "use client";
 
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { logout } from "@/services/auth";
+import { clearSession } from "@/lib/session";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { FC } from "react";
+import { Button } from "./ui/button";
+import { DropdownMenuItem } from "./ui/dropdown-menu";
 
-export const LogoutButton = () => {
+interface LogoutButtonProps {
+  isMenuItem?: boolean;
+}
+
+export const LogoutButton: FC<LogoutButtonProps> = ({ isMenuItem = true }) => {
   const router = useRouter();
 
   const handleLogout = async () => {
-    try {
-      await logout();
-      toast("Sesión cerrada correctamente");
-      router.refresh();
-    } catch {
-      toast("Ocurrió un error inesperado");
-    }
+    await clearSession();
+    router.refresh();
   };
 
   return (
-    <DropdownMenuItem onClick={handleLogout}>Cerrar sesión</DropdownMenuItem>
+    <>
+      {isMenuItem ? (
+        <DropdownMenuItem onClick={handleLogout}>
+          Cerrar sesión
+        </DropdownMenuItem>
+      ) : (
+        <Button className="w-full" onClick={handleLogout} variant="destructive">
+          Cerrar sesión
+        </Button>
+      )}
+    </>
   );
 };

@@ -1,12 +1,15 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, parseError } from "@/lib/utils";
 import { login } from "@/services/auth";
 import { Login, loginSchema } from "@/types/auth.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { AlertMessage } from "./alert-message";
 import { Button } from "./ui/button";
 import {
   Card,
@@ -29,6 +32,10 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const router = useRouter();
+  const [errorStatus, setErrorStatus] = useState<number | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorTimer, setErrorTimer] = useState<NodeJS.Timeout | null>(null);
   const form = useForm<Login>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
@@ -36,13 +43,32 @@ export function LoginForm({
 
   const onSubmit = async (values: Login) => {
     try {
-      await login(values);
-      toast("Inicio de sesión exitoso");
-      window.location.href = "/movies";
-    } catch {
-      toast("Ocurrió un error inesperado");
+      const { message } = await login(values);
+      form.reset();
+      toast(message);
+      router.push("/movies");
+    } catch (error) {
+      const parsed = parseError(error as Error);
+
+      setErrorStatus(parsed.status);
+      setErrorMessage(parsed.message.split(".")[0]);
+
+      if (errorTimer) clearTimeout(errorTimer);
+
+      const timer = setTimeout(() => {
+        setErrorStatus(null);
+        setErrorMessage(null);
+      }, 5000);
+
+      setErrorTimer(timer);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (errorTimer) clearTimeout(errorTimer);
+    };
+  }, [errorTimer]);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -50,6 +76,12 @@ export function LoginForm({
         <CardHeader>
           <CardTitle className="text-2xl">Iniciar sesión</CardTitle>
           <CardDescription>Accede a tu cuenta con tu correo</CardDescription>
+
+          {errorMessage && (
+            <div className="mt-4">
+              <AlertMessage status={errorStatus || 0} message={errorMessage} />
+            </div>
+          )}
         </CardHeader>
 
         <CardContent>

@@ -1,32 +1,39 @@
-import { Movie, TimeFrame, Year } from "@/types/movies";
-import apiRequest from "./api-request";
+import api from "@/lib/fetch";
+import { Movie, TimeFrame, Year } from "@/types/movies.types";
 
-export const getMovies = (headers?: Record<string, string>): Promise<Movie[]> =>
-  apiRequest({ method: "GET", endpoint: "/movies", headers });
+export const getMovies = async (query?: string): Promise<Movie[]> =>
+  await api({ endpoint: `/movies${query}` });
 
-export const getMoviesRecommended = (
-  limit: number,
-  headers?: Record<string, string>
-): Promise<Movie[]> =>
-  apiRequest({
-    method: "GET",
-    endpoint: `/movies/recommended?limit=${limit}`,
-    headers,
-  });
+export const getMoviesRecommended = async (limit?: number): Promise<Movie[]> =>
+  await api({ endpoint: `/movies/recommended?limit=${limit || 5}` });
 
-export const getMoviesMostViewed = (
+export const getMoviesMostViewed = async (
   timeFrame: TimeFrame,
-  limit: number,
-  headers?: Record<string, string>
+  limit?: number
 ): Promise<Movie[]> =>
-  apiRequest({
-    method: "GET",
-    endpoint: `/movies/most-viewed/${timeFrame}?limit=${limit}`,
-    headers,
+  await api({
+    endpoint: `/movies/most-viewed/${timeFrame}?limit=${limit || 5}`,
   });
 
-export const getMoviesSamples = (limit: number): Promise<Movie[]> =>
-  apiRequest({ method: "GET", endpoint: `/movies/samples?limit=${limit}` });
+export const getMoviesSamples = async (limit?: number): Promise<Movie[]> =>
+  await api({ endpoint: `/movies/samples?limit=${limit || 5}` });
 
-export const getMoviesYears = (): Promise<Year[]> =>
-  apiRequest({ method: "GET", endpoint: "/movies/years" });
+export const getMoviesYears = async (): Promise<Year[]> =>
+  await api({ endpoint: "/movies/years" });
+
+export const getMovieBySlug = async (slug: string): Promise<Movie> =>
+  await api({ endpoint: `/movies/by/${slug}` });
+
+export const updateMovieViews = async (id: string): Promise<Movie> =>
+  await api({ method: "PATCH", endpoint: `/movies/update-views/${id}` });
+
+export const updateMovieViewsBySlug = async (slug: string): Promise<Movie> =>
+  await api({ method: "PATCH", endpoint: `/movies/update-views/by/${slug}` });
+
+export const getTotalPages = async (query: string): Promise<number> => {
+  const response: { total_pages: number } = await api({
+    endpoint: `/movies/total-pages${query}`,
+  });
+
+  return response.total_pages;
+};

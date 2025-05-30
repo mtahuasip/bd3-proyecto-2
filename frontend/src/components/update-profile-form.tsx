@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { updateProfile } from "@/services/auth";
 import { UpdateProfile, updateProfileSchema } from "@/types/auth.types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
@@ -36,6 +37,7 @@ export function UpdateProfileForm({
   defaultValues,
   ...props
 }: UpdateProfileFormProps) {
+  const router = useRouter();
   const form = useForm<UpdateProfile>({
     resolver: zodResolver(updateProfileSchema),
     defaultValues,
@@ -44,10 +46,11 @@ export function UpdateProfileForm({
   const onSubmit = async (values: UpdateProfile) => {
     try {
       await updateProfile(values);
+      form.reset();
       toast("Datos actualizados con éxito");
-      window.location.href = "/profile";
+      router.push("/profile");
     } catch {
-      toast("Ocurrió un error inesperado");
+      toast("Ocurrió un error al actualizar datos");
     }
   };
 

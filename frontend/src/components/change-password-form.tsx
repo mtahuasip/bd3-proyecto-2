@@ -36,10 +36,11 @@ export function ChangePasswordForm({
   const onSubmit = async (values: ChangePassword) => {
     try {
       await changePassword(values);
-      toast("Contraseña cambiada con éxito");
       form.reset();
+      toast("Contraseña cambiada con éxito");
     } catch {
-      toast("Ocurrió un error inesperado");
+      form.reset();
+      toast("Ocurrió un error al actualizar la contraseña");
     }
   };
 

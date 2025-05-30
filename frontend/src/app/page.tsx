@@ -4,23 +4,29 @@ import Link from "next/link";
 export default async function Home() {
   return (
     <main>
-      <section
-        className="flex min-h-dvh flex-col items-center gap-8 mask-b-from-60% mask-b-to-95% bg-cover bg-center bg-no-repeat px-16 pt-64 text-center backdrop-brightness-50"
-        style={{ backgroundImage: 'url("/images/hero-bg.webp")' }}
-      >
-        <h1 className="text-primary text-5xl font-extrabold uppercase md:text-7xl lg:text-9xl">
-          Plataforma de Streaming
-        </h1>
+      <section className="relative flex min-h-dvh items-center justify-center">
+        <div
+          className="absolute top-0 left-0 -z-10 h-full w-full mask-b-from-60% mask-b-to-95% bg-cover bg-center bg-no-repeat backdrop-brightness-50"
+          style={{ backgroundImage: 'url("/images/hero-bg.webp")' }}
+        ></div>
 
-        <p className="text-foreground px-20 text-sm font-semibold md:px-24 md:text-base lg:px-32 lg:text-xl">
-          Plataforma de Streaming, este es un proyecto desarrollado por el Grupo
-          15 para la materia de Base de Datos 3. Facultad de Ciencias Puras y
-          Naturales, Universidad Mayor de San Andrés.
-        </p>
+        <div className="mt-64 flex flex-col items-center gap-10 text-center lg:mt-52">
+          <div className="flex flex-col items-center justify-center gap-2 px-8 text-white lg:w-10/12 lg:p-0">
+            <h1 className="text-4xl font-extrabold uppercase lg:text-9xl">
+              Plataforma de Streaming
+            </h1>
 
-        <Button size="lg">
-          <Link href="/register">Suscribirse</Link>
-        </Button>
+            <p className="text-xs font-semibold lg:w-4/5 lg:text-xl">
+              Plataforma de Streaming, este es un proyecto desarrollado por el
+              Grupo 15 para la materia de Base de Datos 3. Facultad de Ciencias
+              Puras y Naturales, Universidad Mayor de San Andrés.
+            </p>
+          </div>
+
+          <Button size="lg">
+            <Link href="/register">Suscribirse</Link>
+          </Button>
+        </div>
       </section>
     </main>
   );

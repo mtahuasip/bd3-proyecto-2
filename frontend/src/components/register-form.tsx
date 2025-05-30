@@ -1,12 +1,15 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, parseError } from "@/lib/utils";
 import { register } from "@/services/auth";
 import { Register, registerSchema } from "@/types/auth.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { AlertMessage } from "./alert-message";
 import { Button } from "./ui/button";
 import {
   Card,
@@ -29,6 +32,10 @@ export const RegisterForm = ({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) => {
+  const router = useRouter();
+  const [errorStatus, setErrorStatus] = useState<number | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorTimer, setErrorTimer] = useState<NodeJS.Timeout | null>(null);
   const form = useForm<Register>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -44,13 +51,32 @@ export const RegisterForm = ({
 
   const onSubmit = async (values: Register) => {
     try {
-      await register(values);
-      toast("Cuenta creada con éxito, redirigiendo al la inicio...");
-      window.location.href = "/movies";
-    } catch {
-      toast("Ocurrió un error inesperado");
+      const { message } = await register(values);
+      form.reset();
+      toast(message);
+      router.push("/movies");
+    } catch (error) {
+      const parsed = parseError(error as Error);
+
+      setErrorStatus(parsed.status);
+      setErrorMessage(parsed.message);
+
+      if (errorTimer) clearTimeout(errorTimer);
+
+      const timer = setTimeout(() => {
+        setErrorStatus(null);
+        setErrorMessage(null);
+      }, 5000);
+
+      setErrorTimer(timer);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (errorTimer) clearTimeout(errorTimer);
+    };
+  }, [errorTimer]);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -58,6 +84,12 @@ export const RegisterForm = ({
         <CardHeader>
           <CardTitle className="text-2xl">Crea tu cuenta</CardTitle>
           <CardDescription>Llena todos los campos</CardDescription>
+
+          {errorMessage && (
+            <div className="mt-4">
+              <AlertMessage status={errorStatus || 0} message={errorMessage} />
+            </div>
+          )}
         </CardHeader>
 
         <CardContent>
@@ -71,7 +103,7 @@ export const RegisterForm = ({
                     <FormItem>
                       <FormLabel>Nombre de usuario</FormLabel>
                       <FormControl>
-                        <Input placeholder="mi_usuario" {...field} />
+                        <Input placeholder="Nombre completo" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -87,7 +119,7 @@ export const RegisterForm = ({
                       <FormControl>
                         <Input
                           type="email"
-                          placeholder="m@example.com"
+                          placeholder="email@example.com"
                           {...field}
                         />
                       </FormControl>

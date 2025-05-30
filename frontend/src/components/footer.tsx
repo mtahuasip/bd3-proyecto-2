@@ -1,37 +1,20 @@
 import { Facebook, Github, Instagram } from "lucide-react";
 import Link from "next/link";
 import { SocialLink } from "./social-link";
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  navigationMenuTriggerStyle,
-} from "./ui/navigation-menu";
 
 export const Footer = () => {
   return (
     <footer className="flex flex-col items-center justify-center gap-4 py-8">
-      <NavigationMenu>
-        <NavigationMenuList>
-          <NavigationMenuItem>
-            <NavigationMenuLink
-              asChild
-              className={navigationMenuTriggerStyle()}
-            >
-              <Link href="/about">Acerca de nosotros</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink
-              asChild
-              className={navigationMenuTriggerStyle()}
-            >
-              <Link href="/help">Ayuda</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
+      <nav>
+        <ul className="flex items-center justify-center gap-4 text-sm font-semibold">
+          <li className="hover:underline hover:underline-offset-2">
+            <Link href="/about">Acerca de nosotros</Link>
+          </li>
+          <li className="hover:underline hover:underline-offset-2">
+            <Link href="/help">Ayuda</Link>
+          </li>
+        </ul>
+      </nav>
 
       <p className="text-sm font-semibold">
         &copy;2025 Grupo 15 - Base de Datos 3

@@ -1,6 +1,6 @@
 "use client";
 
-import { Movie } from "@/types/movies";
+import { Movie } from "@/types/movies.types";
 import Autoplay from "embla-carousel-autoplay";
 import Fade from "embla-carousel-fade";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -16,7 +16,7 @@ import {
 } from "./ui/carousel";
 
 interface RecommendedCarouselProps {
-  movies: Movie[];
+  movies?: Movie[];
 }
 
 export const RecommendedCarousel: FC<RecommendedCarouselProps> = ({
@@ -46,10 +46,11 @@ export const RecommendedCarousel: FC<RecommendedCarouselProps> = ({
 
   return (
     <div className="relative max-h-[580px] w-full">
-      <div className="top-o absolute left-0 z-10 flex h-full w-full items-center justify-between px-5">
+      <div className="pointer-events-none absolute top-0 left-0 z-10 flex h-full w-full items-center justify-between px-5">
         <Button
           size="icon"
           variant="ghost"
+          className="pointer-events-auto"
           onClick={() => {
             carouselApi?.scrollPrev();
           }}
@@ -61,6 +62,7 @@ export const RecommendedCarousel: FC<RecommendedCarouselProps> = ({
         <Button
           size="icon"
           variant="ghost"
+          className="pointer-events-auto"
           onClick={() => {
             carouselApi?.scrollNext();
           }}
@@ -76,23 +78,29 @@ export const RecommendedCarousel: FC<RecommendedCarouselProps> = ({
         plugins={[Autoplay({ delay: 10000 }), Fade()]}
       >
         <CarouselContent>
-          {movies.map((movie) => (
+          {movies?.map((movie) => (
             <CarouselItem key={movie._id}>
               <div className="relative">
                 <Image
-                  className="h-[580px] w-full object-cover"
-                  src={movie.cover_url}
+                  className="-z-10 h-[500px] w-full rounded-sm object-cover brightness-50"
+                  src={movie.cover_url || "/images/herp-bg.webp"}
                   alt={`Portada de la película ${movie.title}`}
                   width={1080}
                   height={720}
                 />
-                <div className="absolute bottom-0 left-0 grid grid-cols-6 grid-rows-1 items-end justify-between gap-8 px-6 py-4">
-                  <div className="col-span-5">
-                    <h2 className="mb-2 text-3xl font-bold">{movie.title}</h2>
-                    <p className="line-clamp-3 text-lg">{movie.description}</p>
+
+                <div className="absolute bottom-0 left-0 grid justify-between bg-black/5 px-6 py-4 md:grid-cols-6 md:grid-rows-1 md:items-end lg:gap-8">
+                  <div className="mb-2 text-white md:col-span-5 lg:mb-0">
+                    <h2 className="mb-2 text-xl font-bold lg:text-3xl">
+                      {movie.title}
+                    </h2>
+                    <p className="line-clamp-3 text-sm lg:text-lg">
+                      {movie.description ||
+                        "Esta película no cuenta con una descripción, por favor espera que se actualice. Disculpas."}
+                    </p>
                   </div>
-                  <div className="z-10 col-span-1 pb-2">
-                    <Button asChild>
+                  <div className="z-30 ml-auto pb-2 md:col-span-1">
+                    <Button asChild variant="outline">
                       <Link href={`/movies/${movie.slug}`}>Ver película</Link>
                     </Button>
                   </div>

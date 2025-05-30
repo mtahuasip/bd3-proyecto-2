@@ -1,20 +1,20 @@
 import { AccessCard } from "@/components/access-card";
 import { Card, CardContent } from "@/components/ui/card";
 import { getSession } from "@/lib/session";
-import { getCategories, getCategoriesSamples } from "@/services/categories";
+import { getCategoriesSamples } from "@/services/categories";
 
 export default async function Page() {
   const session = await getSession();
-  const headers = session ?? undefined;
+  // const headers = session ?? undefined;
 
   let categories;
 
   try {
-    if (session) {
-      categories = await getCategories(headers);
-    } else {
-      categories = await getCategoriesSamples(12);
-    }
+    // if (session) {
+    //   categories = await getCategories(headers);
+    // } else {
+    categories = await getCategoriesSamples(12);
+    // }
   } catch {
     throw new Error("Fallo al cargar los datos");
   }

@@ -1,24 +1,25 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+import { getSession } from "@/lib/session";
+
+const API_BASE_URL = process.env.API_BASE_URL;
 
 interface FetchOptions {
   method?: "GET" | "POST" | "PATCH" | "DELETE";
   endpoint: string;
   body?: unknown;
-  headers?: Record<string, string>;
 }
 
-const apiRequest = async <T = unknown>({
+const instance = async <T = unknown>({
   method = "GET",
   endpoint,
   body,
-  headers = {},
 }: FetchOptions): Promise<T> => {
+  const session = await getSession();
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method,
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      ...headers,
+      Authorization: `Bearer ${session?.accessToken}`,
     },
     body: body ? JSON.stringify(body) : undefined,
   });
@@ -27,13 +28,16 @@ const apiRequest = async <T = unknown>({
     const errorData = await response.json().catch(() => ({
       message: response.statusText,
     }));
-    throw {
-      status: response.status,
-      ...errorData,
-    };
+
+    throw new Error(
+      JSON.stringify({
+        status: response.status,
+        ...errorData,
+      })
+    );
   }
 
   return response.json();
 };
 
-export default apiRequest;
+export default instance;

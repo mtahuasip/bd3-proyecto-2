@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "./lib/session";
+import { validateTokenOrRefresh } from "./lib/session";
+import { redirectTo } from "./lib/utils";
 
+// Rutas públicas que no requieren autenticación
 const publicRoutes = [
   "/",
   "/login",
@@ -11,25 +13,41 @@ const publicRoutes = [
   "/help",
 ];
 
+// Rutas públicas restringidas si el usuario ya está autenticado
 const publicRestrictedWhenLoggedIn = ["/", "/login", "/register"];
 
-export default async function middleware(req: NextRequest) {
-  const path = req.nextUrl.pathname;
-  const session = await getSession();
+export default async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const accessToken = request.cookies.get("access_token")?.value;
+  const refreshTokenValue = request.cookies.get("refresh_token")?.value;
 
-  const isPublicRoute = publicRoutes.includes(path);
-  const isPublicRestricted = publicRestrictedWhenLoggedIn.includes(path);
+  const isPublic = publicRoutes.includes(pathname);
+  const isPublicRestricted = publicRestrictedWhenLoggedIn.includes(pathname);
 
-  // Si el usuario NO tiene sesión y no es ruta pública → redirige a login
-  if (!session && !isPublicRoute) {
-    return NextResponse.redirect(new URL("/login", req.nextUrl));
+  // Redirigir a login si no hay sesión y ruta no es pública
+  if (!accessToken && !isPublic) {
+    return redirectTo("/login", request);
   }
 
-  // Si el usuario tiene sesión e intenta acceder a login, register o raíz → redirige a /movies
-  if (session && isPublicRestricted) {
-    return NextResponse.redirect(new URL("/movies", req.nextUrl));
+  // Validar token y refrescar si expiró
+  if (accessToken) {
+    // const tokenIsValid = await validateTokenOrRefresh(
+    //   accessToken,
+    //   refreshTokenValue,
+    //   request
+    // );
+    const tokenIsValid = await validateTokenOrRefresh(refreshTokenValue);
+    if (!tokenIsValid) {
+      return redirectTo("/login", request, true);
+    }
   }
 
+  // Redirigir a /movies si el usuario autenticado accede a login/register/home
+  if (accessToken && isPublicRestricted) {
+    return redirectTo("/movies", request);
+  }
+
+  // Continuar normalmente
   return NextResponse.next();
 }
 
@@ -39,9 +57,9 @@ export const config = {
     "/",
     "/login",
     "/register",
+    "/favorites",
 
     // Rutas privadas exactas
-    "/favorites",
     "/favorites/:slug*",
     "/playlists",
     "/playlists/:slug*",
