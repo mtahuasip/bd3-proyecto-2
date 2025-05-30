@@ -159,21 +159,11 @@ class MovieDAO(object):
 
                 query = {"last_view": {"$gte": start_time}}
 
-                print(f"start time {start_time}")
-
-                print("timeframe", list(mongo.db.movies.find(query)))
-
                 return list(mongo.db.movies.find(query).sort("views", -1).limit(limit))
             else:
                 print("all", list(mongo.db.movies.find(query)))
 
                 return list(mongo.db.movies.find({}).sort("views", -1).limit(limit))
-
-            # return list(
-            #     mongo.db.movies.find({"created_at": {"$gte": start_time}})
-            #     .sort("views", -1)
-            #     .limit(limit)
-            # )
 
         except PyMongoError as e:
             print(f"❌ Error de MongoDB: {e}")
