@@ -30,3 +30,9 @@ export const getMoviesSamples = (limit: number): Promise<Movie[]> =>
 
 export const getMoviesYears = (): Promise<Year[]> =>
   apiRequest({ method: "GET", endpoint: "/movies/years" });
+
+export const getMovieBySlug = async (slug: string): Promise<Movie> => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/movies/[slug]?slug=${slug}`);
+  if (!res.ok) throw new Error('Película no encontrada');
+  return res.json();
+};
