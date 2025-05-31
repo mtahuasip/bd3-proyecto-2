@@ -1,5 +1,7 @@
 import { AccessCard } from "@/components/access-card";
+import { AsideCollapsible } from "@/components/aside-collapsible";
 import { CompactPagination } from "@/components/compact-pagination";
+import { InputCheckbox } from "@/components/input-checkbox";
 import { MostViewedScroll } from "@/components/most-viewed-scroll";
 import { RecommendedCarousel } from "@/components/recommended-carousel";
 import { Search } from "@/components/search";
@@ -113,12 +115,17 @@ export default async function Page({ searchParams }: PageProps) {
   return (
     <section className="px-4 lg:px-16">
       <Tabs
-        defaultValue="Recommendations"
+        defaultValue={session !== null ? "Recommendations" : "catalog"}
         className="pt-16 lg:min-h-svh lg:pt-20"
       >
         <TabsList className="mx-auto lg:mt-2">
-          <TabsTrigger value="Recommendations">Recomendaciones</TabsTrigger>
-          <TabsTrigger value="movies">Películas</TabsTrigger>
+          <TabsTrigger
+            value="Recommendations"
+            disabled={session ? false : true}
+          >
+            Recomendaciones
+          </TabsTrigger>
+          <TabsTrigger value="catalog">Catalogo</TabsTrigger>
         </TabsList>
         <TabsContent value="Recommendations">
           <section className="flex flex-wrap items-center justify-between gap-4 lg:mt-6 lg:flex-nowrap lg:gap-10">
@@ -140,88 +147,75 @@ export default async function Page({ searchParams }: PageProps) {
           </section>
         </TabsContent>
 
-        <TabsContent value="movies">
+        <TabsContent value="catalog">
           <section className="md:mt-4">
             <h2 className="mb-4 text-center text-2xl font-bold md:mb-8 lg:text-4xl">
               Catalogo de películas
             </h2>
 
-            <div className="mb-6">
-              <Search />
+            <div className="flew-wrap mb-6 gap-8 lg:flex">
+              {session && (
+                <>
+                  <AsideCollapsible
+                    categories={categories || []}
+                    years={years || []}
+                  />
+
+                  <aside className="hidden min-w-80 lg:block">
+                    <div>
+                      <h6 className="mb-4 text-2xl font-bold">
+                        Buscar película
+                      </h6>
+                      <Search />
+                    </div>
+
+                    <div className="flex justify-between gap-4">
+                      <div className="px-4">
+                        <h6 className="mt-4 text-2xl font-bold">Categoría</h6>
+                        <div className="mt-4 flex flex-col gap-2">
+                          {categories?.map((category) => (
+                            <InputCheckbox
+                              key={category._id}
+                              id={category._id}
+                              label={category.name}
+                              query="categories"
+                            />
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="px-4">
+                        <h6 className="mt-4 text-2xl font-bold">Año</h6>
+                        <div className="mt-4 flex flex-col gap-2">
+                          {years?.map((year) => (
+                            <InputCheckbox
+                              key={year.id}
+                              id={year.id}
+                              label={year.year}
+                              query="year"
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </aside>
+                </>
+              )}
+
+              <div className="mb-8">
+                <MoviePosters />
+                {session && (
+                  <CompactPagination
+                    className="mt-8 md:mt-10 lg:mt-12"
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                  />
+                )}
+              </div>
             </div>
-
-            <MoviePosters />
-
-            <CompactPagination
-              className="mt-8 md:mt-10 lg:mt-12"
-              currentPage={currentPage}
-              totalPages={totalPages}
-            />
           </section>
         </TabsContent>
       </Tabs>
-
-      {/*
-
-      <div
-        className={`grid grid-cols-6 grid-rows-1 gap-10 ${session ? "py-8" : "pt-20 pb-8"}`}
-      >
-        {session && (
-          <aside className={`${session ? "col-span-2" : "col-span-0"}`}>
-            <h6 className="mt-4 text-2xl font-bold">Buscar película</h6>
-            <div className="mt-6 ml-6">
-              <InputSearchForm />
-            </div>
-
-            <h6 className="mt-4 text-2xl font-bold">Categorías</h6>
-            <div className="mt-4 ml-6 flex flex-col gap-2">
-              {categories?.map((category) => (
-                <InputCheckbox
-                  key={category._id}
-                  id={category._id}
-                  label={category.name}
-                />
-              ))}
-            </div>
-
-            <h6 className="mt-4 text-2xl font-bold">Año</h6>
-            <div className="mt-4 ml-6 flex flex-col gap-2">
-              {years?.map((year) => (
-                <InputCheckbox key={year.id} id={year.id} label={year.year} />
-              ))}
-            </div>
-          </aside>
-        )}
-
-        <section className={`${session ? "col-span-4" : "col-span-6"}`}>
-          <h2
-            className={`mb-6 text-4xl font-bold ${!session && "text-center"}`}
-          >
-            Catalogo de películas
-          </h2>
-
-          <div className="flex flex-wrap items-center justify-between gap-6">
-            {movies?.map((movie) => (
-              <article
-                key={movie._id}
-                className="rounded-md shadow-md transition-transform ease-in-out hover:scale-105"
-              >
-                <Link href={`/movies/${movie.slug}`}>
-                  <Image
-                    className="h-72 w-52 rounded-md object-cover"
-                    src={movie.poster_url}
-                    alt={`Poster de la película ${movie.title}`}
-                    width={720}
-                    height={1080}
-                  />
-                </Link>
-              </article>
-            ))}
-          </div>
-        </section>
-      </div>
-
-       */}
 
       {!session && <AccessCard />}
     </section>
