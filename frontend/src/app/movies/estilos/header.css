@@ -1,0 +1,23 @@
+.banner {
+  background-color: #111827;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-areas: "a a b c d e f g";
+  height: 80px;
+  place-items: center;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* fuente */
+  font-size: 2.5rem; /* tamaño de letra */
+  color: #ffffff; /* color de texto */
+}
+.nom {
+  grid-area: a;
+}
+.ini {
+  grid-area: e;
+}
+.peli {
+  grid-area: f;
+}
+.cuenta {
+  grid-area: g;
+}
