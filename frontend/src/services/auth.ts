@@ -1,3 +1,5 @@
+"use server";
+
 import api from "@/lib/fetch";
 import { setSession } from "@/lib/session";
 import {
