@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Favoritos | Plataforma de Streaming",
+  title: "Favoritos",
 };
 
 export default function layout({

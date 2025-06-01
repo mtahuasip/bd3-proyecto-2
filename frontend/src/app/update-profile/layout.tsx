@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Editar datos | Plataforma de Streaming",
+  title: "Editar datos",
 };
 
 export default function layout({

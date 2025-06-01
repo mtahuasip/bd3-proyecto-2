@@ -11,7 +11,10 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Inicio | Plataforma de Streaming",
+  title: {
+    template: "%s | Plataforma de Streaming",
+    default: "Plataforma de Streaming",
+  },
   description:
     "Plataforma de Streaming, este es un proyecto desarrollado por el Grupo 15 para la materia de Base de Datos 3. Facultad de Ciencias Puras y Naturales, Universidad Mayor de San Andrés.",
 };

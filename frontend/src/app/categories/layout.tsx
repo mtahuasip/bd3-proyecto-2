@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Categorías | Plataforma de Streaming",
+  title: "Categorías",
 };
 
 export default function layout({

@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Cambiar contraseña | Plataforma de Streaming",
+  title: "Cambiar contraseña",
 };
 
 export default function layout({

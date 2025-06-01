@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Mi perfil | Plataforma de Streaming",
+  title: "Mi perfil",
 };
 
 export default function layout({

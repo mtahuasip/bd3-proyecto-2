@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Iniciar sesión | Plataforma de Streaming",
+  title: "Iniciar sesión ",
 };
 
 export default function layout({
