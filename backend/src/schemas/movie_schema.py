@@ -6,8 +6,8 @@ movie = api.model(
     {
         "_id": fields.String(readonly=True),
         "title": fields.String(required=True, min_length=1, max_length=100),
-        "description": fields.String(required=True, min_length=1, max_length=500),
-        # "duration": fields.Integer(required=True),
+        "description": fields.String(required=True, min_length=1),
+        "duration": fields.Integer(required=False),
         "year": fields.Integer(required=True),
         "categories": fields.List(
             fields.String(required=True, min_length=1, max_length=100),
@@ -17,9 +17,9 @@ movie = api.model(
         "cover_url": fields.String(readonly=True),
         "poster_url": fields.String(readonly=True),
         "thumbnail_url": fields.String(readonly=True),
-        "video_url": fields.String(readonly=True),
+        "video_url": fields.String(readonly=False),
         "slug": fields.String(readonly=True),
-        "last_view": fields.DateTime(readonly=True),
+        "last_view": fields.DateTime(readonly=False),
         "created_at": fields.DateTime(readonly=True),
         "updated_at": fields.DateTime(readonly=True),
     },

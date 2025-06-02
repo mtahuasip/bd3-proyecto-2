@@ -32,10 +32,7 @@ function normalizeMovie(movie?: Movie) {
   return {
     ...movie,
     video_url: movie?.video_url ?? "https://www.youtube.com/embed/19g66ezsKAg",
-    // streaming_history: user?.streaming_history ?? [],
-    // created_at: user?.created_at ?? new Date().toISOString(),
-    // updated_at: user?.updated_at ?? new Date().toISOString(),
-    // last_login: user?.last_login ?? new Date().toISOString(),
+    duration: movie?.duration ?? 120,
   };
 }
 
