@@ -56,7 +56,7 @@ export const UserMenu: FC<UserMenuProps> = ({ username = "Username" }) => {
           </Avatar>
 
           <span className="text-sm capitalize underline underline-offset-2">
-            {username}
+            <Link href="/profile"> {username}</Link>
           </span>
         </div>
 

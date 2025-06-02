@@ -106,7 +106,7 @@ const getData = async (
 export default async function Page({ searchParams }: PageProps) {
   const path = await searchParams;
   const currentPage = Number(path.page ?? 1);
-  const perPage = 0;
+  const perPage = 12;
   const {
     session,
     movies,
@@ -116,6 +116,16 @@ export default async function Page({ searchParams }: PageProps) {
     totalPages,
     years,
   } = await getData(path, currentPage, perPage);
+
+  console.log({
+    session,
+    movies,
+    categories,
+    mostViewed,
+    recommended,
+    totalPages,
+    years,
+  });
 
   const MoviePosters = () => (
     <div className="flex flex-wrap items-center gap-4">
