@@ -12,7 +12,7 @@ interface PageProps {
   params: Promise<{ slug?: string }>;
 }
 
-export const getData = async (path?: { slug?: string }) => {
+const getData = async (path?: { slug?: string }) => {
   try {
     if (!path?.slug) throw new Error("No slug provided");
 

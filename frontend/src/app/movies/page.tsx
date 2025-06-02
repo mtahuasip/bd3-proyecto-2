@@ -16,80 +16,106 @@ import {
   getMoviesYears,
   getTotalPages,
 } from "@/services/movies";
-import { Category } from "@/types/category.types";
-import { Movie, TimeFrame, Year } from "@/types/movies.types";
+import { TimeFrame } from "@/types/movies.types";
 import Image from "next/image";
 import Link from "next/link";
 
+type SearchParamsType = {
+  [key: string]: string | number | string[] | undefined;
+};
+
 interface PageProps {
-  searchParams: Promise<{
-    [key: string]: string | number | string[] | undefined;
-  }>;
+  searchParams: Promise<SearchParamsType>;
 }
 
-export default async function Page({ searchParams }: PageProps) {
-  const path = await searchParams;
+const buildQueryString = (searchParams: SearchParamsType) => {
+  let query = "";
 
-  const buildQueryString = (searchParams: {
-    [key: string]: string | number | string[] | undefined;
-  }) => {
-    let query = "";
+  const keys = ["title", "categories", "year", "page"];
 
-    const keys = ["title", "categories", "year", "page"];
+  for (const key of keys) {
+    const value = searchParams[key];
 
-    for (const key of keys) {
-      const value = searchParams[key];
+    switch (key) {
+      case "title":
+      case "categories":
+      case "year":
+        if (value !== undefined) {
+          query += `${query ? "&" : "?"}${key}=${encodeURIComponent(String(value))}`;
+        }
+        break;
 
-      switch (key) {
-        case "title":
-        case "categories":
-        case "year":
-          if (value !== undefined) {
-            query += `${query ? "&" : "?"}${key}=${encodeURIComponent(String(value))}`;
-          }
-          break;
-
-        default:
-          break;
-      }
+      default:
+        break;
     }
+  }
 
-    return query;
-  };
+  return query;
+};
 
-  const session = await getSession();
-  let movies: Movie[] | null = null;
-  let recommended: Movie[] | null = null;
-  let mostViewed: Movie[] | null = null;
-  let categories: Category[] | null = null;
-  let years: Year[] | null = null;
-
-  let currentPage = Number(path.page ?? 1);
-  let perPage = 12;
-  let totalPages = 0;
-
-  const queryString = await buildQueryString(path);
-
+const getData = async (
+  searchParams: SearchParamsType,
+  currentPage: number,
+  perPage: number
+) => {
   try {
+    const session = await getSession();
+    const queryString = buildQueryString(searchParams);
+
     if (session) {
-      movies = await getMovies(
+      const movies = await getMovies(
         queryString +
           `${queryString ? "&" : "?"}page=${currentPage}&per_page=${perPage}`
       );
-
-      totalPages = await getTotalPages(
+      const totalPages = await getTotalPages(
         queryString + `${queryString ? "&" : "?"}per_page=${perPage}`
       );
-      categories = await getCategories();
-      recommended = await getMoviesRecommended(5);
-      mostViewed = await getMoviesMostViewed(TimeFrame.WEEK, 10);
+      const recommended = await getMoviesRecommended(5);
+      const mostViewed = await getMoviesMostViewed(TimeFrame.WEEK, 10);
+      const categories = await getCategories();
+      const years = await getMoviesYears();
+
+      return {
+        session,
+        movies,
+        totalPages,
+        recommended,
+        mostViewed,
+        categories,
+        years,
+      };
     } else {
-      movies = await getMoviesSamples(24);
+      const movies = await getMoviesSamples(24);
+
+      return { session, movies };
     }
-    years = await getMoviesYears();
   } catch (error) {
-    console.log(error);
+    console.error("Error in getData:", error);
+    return {
+      session: null,
+      movies: [],
+      totalPages: 0,
+      recommended: [],
+      mostViewed: [],
+      categories: [],
+      years: [],
+    };
   }
+};
+
+export default async function Page({ searchParams }: PageProps) {
+  const path = await searchParams;
+  const currentPage = Number(path.page ?? 1);
+  const perPage = 0;
+  const {
+    session,
+    movies,
+    categories,
+    mostViewed,
+    recommended,
+    totalPages,
+    years,
+  } = await getData(path, currentPage, perPage);
 
   const MoviePosters = () => (
     <div className="flex flex-wrap items-center gap-4">
