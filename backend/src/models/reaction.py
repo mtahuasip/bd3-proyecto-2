@@ -40,8 +40,8 @@ class ReactionDAO(object):
             result = mongo.db.reactions.insert_one(new_reaction)
 
             # === REDIS ===
-            video_id = data["movie"]
-            user_id = data["user"]
+            video_id = data["movie"]["_id"]
+            user_id = data["user"]["_id"]
             reaction_type = data["type"]  # "like" o "dislike"
 
             if reaction_type == "like":
