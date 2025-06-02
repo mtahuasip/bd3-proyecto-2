@@ -2,10 +2,11 @@
 
 import { Textarea } from "@/components/ui/textarea";
 import { postComment } from "@/services/comment";
-import { commentSchema, CreateComment } from "@/types/comment.types";
+import { CreateComment, createCommentSchema } from "@/types/comment.types";
 import { Movie } from "@/types/movies.types";
 import { SessionUser } from "@/types/session.types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { FC } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -13,40 +14,42 @@ import { Button } from "./ui/button";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form";
 
 interface CommentFormProps {
-  user: SessionUser;
-  movie: Movie;
+  user?: SessionUser;
+  movie?: Movie;
+}
+
+function normalizeUser(user?: SessionUser) {
+  return {
+    ...user,
+    streaming_history: user?.streaming_history ?? [],
+    created_at: user?.created_at ?? new Date().toISOString(),
+    updated_at: user?.updated_at ?? new Date().toISOString(),
+    last_login: user?.last_login ?? new Date().toISOString(),
+  };
 }
 
 export const CommentForm: FC<CommentFormProps> = ({ user, movie }) => {
   const form = useForm<CreateComment>({
-    resolver: zodResolver(commentSchema),
+    resolver: zodResolver(createCommentSchema),
     defaultValues: { content: "" },
   });
+  const { replace } = useRouter();
 
-  console.log(form.getValues());
+  const normalizedUser = normalizeUser(user);
 
   const onSubmit = async (values: CreateComment) => {
     if (values.content === "") {
-      const data = {
-        ...values,
-        user,
-        movie,
-      };
-
-      console.log(data);
-      console.log(values);
-      console.log("vacio");
-      toast("No hay nada para comentar");
+      toast("No escribiste nada para comentar");
     } else {
       const data = {
         ...values,
-        user,
+        user: normalizedUser,
         movie,
       };
+
       await postComment(data);
-      console.log(data);
-      console.log(values);
-      console.log("datos");
+      form.reset();
+      replace(`/movies/${movie?.slug}`);
     }
   };
 

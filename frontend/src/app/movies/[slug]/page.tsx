@@ -3,8 +3,8 @@ import { CommentScroll } from "@/components/comment-scroll";
 import { ReactionButton } from "@/components/reaction-button";
 import { VideoPlayer } from "@/components/video-player";
 import { profile } from "@/services/auth";
+import { getCommentsByMovie } from "@/services/comment";
 import { updateMovieViewsBySlug } from "@/services/movies";
-import { Movie } from "@/types/movies.types";
 import { Heart, ListVideo, ThumbsDown, ThumbsUp } from "lucide-react";
 import { Suspense } from "react";
 
@@ -12,16 +12,27 @@ interface PageProps {
   params: Promise<{ slug?: string }>;
 }
 
+export const getData = async (path?: { slug?: string }) => {
+  try {
+    if (!path?.slug) throw new Error("No slug provided");
+
+    const user = await profile();
+    const movie = await updateMovieViewsBySlug(path.slug);
+
+    if (!movie) throw new Error("Movie not found");
+
+    const comments = await getCommentsByMovie(movie._id);
+
+    return { user, movie, comments };
+  } catch (error) {
+    console.error("Error in getData:", error);
+    return { user: null, movie: null, comments: [] };
+  }
+};
+
 export default async function Page({ params }: PageProps) {
   const path = await params;
-  let movie: Movie | null = null;
-  const user = await profile();
-
-  try {
-    movie = await updateMovieViewsBySlug(path?.slug || "");
-  } catch (error) {
-    console.log(error);
-  }
+  const { user, movie, comments } = await getData(path);
 
   const getYouTubeEmbedUrl = (url?: string) => {
     if (!url) return "https://www.youtube.com/embed/19g66ezsKAg";
@@ -55,9 +66,9 @@ export default async function Page({ params }: PageProps) {
       <div className="w-full lg:w-[35%]">
         <h2 className="mb-2 text-lg font-semibold">Comentarios</h2>
         <div className="flex flex-col justify-between gap-10">
-          <CommentScroll comments={[]} />
+          <CommentScroll comments={comments || []} />
 
-          <CommentForm user={user} movie={movie} />
+          <CommentForm user={user || undefined} movie={movie || undefined} />
         </div>
       </div>
     </section>

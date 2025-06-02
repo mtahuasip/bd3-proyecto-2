@@ -75,5 +75,23 @@ class CommentDAO(object):
             print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
+    def get_comments_by_movie(self, id):
+        verify_id(id, api)
+
+        try:
+            comments_cursor = mongo.db.comments.find({"movie._id": id}).sort(
+                "created_at", -1
+            )
+            comments_found = list(comments_cursor)
+        except PyMongoError as e:
+            print(f"❌ Error de MongoDB: {e}")
+            api.abort(500, "Error interno del servidor")
+
+        if comments_found:
+            return comments_found
+
+        return []
+        # api.abort(404, "Comentarios no encontrados")
+
 
 comment_dao = CommentDAO()

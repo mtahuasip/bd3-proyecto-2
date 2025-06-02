@@ -58,3 +58,15 @@ class Comment(Resource):
     def patch(self, id):
         """Actualiza parcialmente el comentario con el id proporcionado"""
         return comment_dao.update(id, api.payload)
+
+
+@ns.route("/movie/<string:id>")
+@ns.response(404, "Comentarios no encontrados")
+class Comment(Resource):
+    @ns.doc("get_comments_by_movie")
+    @jwt_required()
+    @roles_required("admin", "staff", "user")
+    @ns.marshal_with(comment)
+    def get(self, id):
+        """Devuelve los comentarios de una película con el id proporcionado"""
+        return comment_dao.get_comments_by_movie(id)

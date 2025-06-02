@@ -11,11 +11,11 @@ interface LogoutButtonProps {
 }
 
 export const LogoutButton: FC<LogoutButtonProps> = ({ isMenuItem = true }) => {
-  const router = useRouter();
+  const { replace } = useRouter();
 
   const handleLogout = async () => {
     await clearSession();
-    router.refresh();
+    replace("/login");
   };
 
   return (

@@ -1,69 +1,32 @@
+import { CommentType } from "@/types/comment.types";
 import { format } from "date-fns";
 import { FC } from "react";
 import { ScrollArea } from "./ui/scroll-area";
 
 interface CommentScrollProps {
-  comments: { id: number; user: string; content: string; createdAt: Date }[];
+  comments?: CommentType[];
 }
 
 export const CommentScroll: FC<CommentScrollProps> = ({ comments }) => {
-  comments = [
-    {
-      id: 1,
-      user: "user 1",
-      content:
-        "   Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aliquam officiis fugit, nostrum quidem incidunt, corporis velit atque a, dolorum laborum ducimus quam sunt optio libero voluptas unde accusantium? Quae.",
-      createdAt: new Date(),
-    },
-    {
-      id: 2,
-      user: "user 1",
-      content:
-        "   Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aliquam officiis fugit, nostrum quidem incidunt, corporis velit atque a, dolorum laborum ducimus quam sunt optio libero voluptas unde accusantium? Quae.",
-      createdAt: new Date(),
-    },
-    {
-      id: 3,
-      user: "user 1",
-      content:
-        "   Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aliquam officiis fugit, nostrum quidem incidunt, corporis velit atque a, dolorum laborum ducimus quam sunt optio libero voluptas unde accusantium? Quae.",
-      createdAt: new Date(),
-    },
-    {
-      id: 4,
-      user: "user 1",
-      content:
-        "   Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aliquam officiis fugit, nostrum quidem incidunt, corporis velit atque a, dolorum laborum ducimus quam sunt optio libero voluptas unde accusantium? Quae.",
-      createdAt: new Date(),
-    },
-    {
-      id: 5,
-      user: "user 1",
-      content:
-        "   Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aliquam officiis fugit, nostrum quidem incidunt, corporis velit atque a, dolorum laborum ducimus quam sunt optio libero voluptas unde accusantium? Quae.",
-      createdAt: new Date(),
-    },
-    {
-      id: 6,
-      user: "user 1",
-      content:
-        "   Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis aliquam officiis fugit, nostrum quidem incidunt, corporis velit atque a, dolorum laborum ducimus quam sunt optio libero voluptas unde accusantium? Quae.",
-      createdAt: new Date(),
-    },
-  ];
-
   return (
     <ScrollArea className="h-[450px]">
+      {comments?.length === 0 && (
+        <p className="text-center text-lg font-light">
+          Todavía no hay comentarios, sé el primero en comentar.
+        </p>
+      )}
       <div className="flex flex-col gap-2">
         {comments?.map((comment) => (
-          <div key={comment.id} className="rounded-md border p-2">
-            <h6 className="mb-1 text-sm font-semibold">{comment.user}</h6>
+          <div key={comment._id} className="rounded-md border p-2">
+            <h6 className="mb-1 text-sm font-semibold">
+              {comment.user.username}
+            </h6>
             <p className="text-xs">{comment.content}</p>
             <div>
               <span className="text-right text-xs">
                 Fecha:
                 {format(
-                  new Date(comment?.createdAt || new Date()),
+                  new Date(comment?.created_at || new Date()),
                   "dd/MM/yyyy HH:mm"
                 )}
               </span>
