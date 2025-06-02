@@ -11,7 +11,7 @@ export const CommentScroll: FC<CommentScrollProps> = ({ comments }) => {
   return (
     <ScrollArea className="h-[450px]">
       {comments?.length === 0 && (
-        <p className="text-center text-lg font-light">
+        <p className="text-center text-xs font-light md:text-lg">
           Todavía no hay comentarios, sé el primero en comentar.
         </p>
       )}

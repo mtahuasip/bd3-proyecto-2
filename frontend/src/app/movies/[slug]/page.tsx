@@ -1,6 +1,7 @@
 import { CommentForm } from "@/components/comment-form";
 import { CommentScroll } from "@/components/comment-scroll";
 import { ReactionButton } from "@/components/reaction-button";
+import { Separator } from "@/components/ui/separator";
 import { VideoPlayer } from "@/components/video-player";
 import { profile } from "@/services/auth";
 import { getCommentsByMovie } from "@/services/comment";
@@ -42,25 +43,40 @@ export default async function Page({ params }: PageProps) {
   };
 
   return (
-    <section className="flex flex-wrap items-center justify-between gap-4 pt-20 lg:flex-nowrap lg:gap-10 lg:px-16">
+    <section className="flex flex-wrap items-center justify-between gap-4 px-4 pt-20 md:px-8 lg:flex-nowrap lg:gap-10 lg:px-16">
       <div className="w-full lg:w-[65%]">
-        <h1 className="mb-4 text-center text-2xl font-bold md:text-left lg:mb-4 lg:text-3xl">
+        <h1 className="mb-1 text-center text-lg font-bold md:mb-4 md:text-left md:text-2xl lg:mb-4 lg:text-3xl">
           {movie?.title}
         </h1>
+        <Separator />
+
+        <div className="mb-2 md:mb-4">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-semibold">
+              {movie?.categories.join(", ")}
+            </p>
+            <div>
+              <span className="mr-2 text-xs font-semibold">Duración:</span>
+              <span className="text-muted-foreground text-xs font-bold sm:text-sm">
+                {movie?.duration || "No disponible"}
+              </span>
+            </div>
+          </div>
+          <Separator />
+
+          <p className="text-sm">{movie?.description}</p>
+        </div>
 
         <Suspense fallback={<p>Loading video...</p>}>
           <VideoPlayer src={getYouTubeEmbedUrl(movie?.video_url)} />
         </Suspense>
 
-        <div className="flex justify-center gap-8 py-2">
+        <div className="flex items-start justify-center gap-4 py-2 md:gap-8">
           <ReactionButton label="Me gusta" Icon={ThumbsUp} />
           <ReactionButton label="No me gusta" Icon={ThumbsDown} />
           <ReactionButton label="Agregar a favoritos" Icon={Heart} />
           <ReactionButton label="Agregar a una lista" Icon={ListVideo} />
         </div>
-
-        <h3 className="text-lg font-semibold">Descripción</h3>
-        <p className="text-sm">{movie?.description}</p>
       </div>
 
       <div className="w-full lg:w-[35%]">

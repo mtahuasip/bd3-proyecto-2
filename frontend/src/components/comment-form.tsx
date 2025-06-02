@@ -28,6 +28,17 @@ function normalizeUser(user?: SessionUser) {
   };
 }
 
+function normalizeMovie(movie?: Movie) {
+  return {
+    ...movie,
+    video_url: movie?.video_url ?? "https://www.youtube.com/embed/19g66ezsKAg",
+    // streaming_history: user?.streaming_history ?? [],
+    // created_at: user?.created_at ?? new Date().toISOString(),
+    // updated_at: user?.updated_at ?? new Date().toISOString(),
+    // last_login: user?.last_login ?? new Date().toISOString(),
+  };
+}
+
 export const CommentForm: FC<CommentFormProps> = ({ user, movie }) => {
   const form = useForm<CreateComment>({
     resolver: zodResolver(createCommentSchema),
@@ -36,6 +47,7 @@ export const CommentForm: FC<CommentFormProps> = ({ user, movie }) => {
   const { replace } = useRouter();
 
   const normalizedUser = normalizeUser(user);
+  const normalizedMovie = normalizeMovie(movie);
 
   const onSubmit = async (values: CreateComment) => {
     if (values.content === "") {
@@ -44,12 +56,12 @@ export const CommentForm: FC<CommentFormProps> = ({ user, movie }) => {
       const data = {
         ...values,
         user: normalizedUser,
-        movie,
+        movie: normalizedMovie,
       };
 
       await postComment(data);
       form.reset();
-      replace(`/movies/${movie?.slug}`);
+      replace(`/movies/${movie?.slug}`, { scroll: true });
     }
   };
 

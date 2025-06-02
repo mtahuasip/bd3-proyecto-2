@@ -8,7 +8,7 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({ src }) => {
   return (
     <div>
       <iframe
-        className="h-[500px] w-full rounded-sm"
+        className="h-[250px] w-full rounded-sm md:h-[500px]"
         src={src}
         loading="lazy"
         title="Description"
