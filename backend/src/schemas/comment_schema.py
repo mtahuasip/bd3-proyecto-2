@@ -1,14 +1,28 @@
 from flask_restx import fields
 from src.extensions import api
+from .user_schema import user_output
+from .movie_schema import movie
+
+answer = api.model(
+    "Answer",
+    {
+        "_id": fields.String(readonly=True),
+        "content": fields.String(required=True, min_length=1, max_length=500),
+        "comment_id": fields.String(required=True),
+        "user": fields.Nested(user_output, required=True),
+        "created_at": fields.DateTime(readonly=True),
+        "updated_at": fields.DateTime(readonly=True),
+    },
+)
 
 comment = api.model(
     "Comment",
     {
         "_id": fields.String(readonly=True),
-        "user": fields.String(required=True, min_length=1, max_length=100),
         "content": fields.String(required=True, min_length=1, max_length=500),
-        "movie": fields.String(required=True, min_length=1, max_length=100),
-        "answers": fields.List(fields.String, readonly=True),
+        "user": fields.Nested(user_output, required=True),
+        "movie": fields.Nested(movie, required=True),
+        "answers": fields.List(fields.Nested(answer)),
         "created_at": fields.DateTime(readonly=True),
         "updated_at": fields.DateTime(readonly=True),
     },

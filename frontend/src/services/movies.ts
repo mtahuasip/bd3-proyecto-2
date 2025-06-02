@@ -1,3 +1,5 @@
+"use server";
+
 import api from "@/lib/fetch";
 import { Movie, TimeFrame, Year } from "@/types/movies.types";
 

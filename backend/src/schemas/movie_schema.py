@@ -7,7 +7,7 @@ movie = api.model(
         "_id": fields.String(readonly=True),
         "title": fields.String(required=True, min_length=1, max_length=100),
         "description": fields.String(required=True, min_length=1, max_length=500),
-        "duration": fields.Integer(required=True),
+        # "duration": fields.Integer(required=True),
         "year": fields.Integer(required=True),
         "categories": fields.List(
             fields.String(required=True, min_length=1, max_length=100),
