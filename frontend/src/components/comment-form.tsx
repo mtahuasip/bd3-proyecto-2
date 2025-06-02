@@ -1,6 +1,7 @@
 "use client";
 
 import { Textarea } from "@/components/ui/textarea";
+import { normalizeMovie, normalizeUser } from "@/lib/helpers";
 import { postComment } from "@/services/comment";
 import { CreateComment, createCommentSchema } from "@/types/comment.types";
 import { Movie } from "@/types/movies.types";
@@ -18,24 +19,6 @@ interface CommentFormProps {
   movie?: Movie;
 }
 
-function normalizeUser(user?: SessionUser) {
-  return {
-    ...user,
-    streaming_history: user?.streaming_history ?? [],
-    created_at: user?.created_at ?? new Date().toISOString(),
-    updated_at: user?.updated_at ?? new Date().toISOString(),
-    last_login: user?.last_login ?? new Date().toISOString(),
-  };
-}
-
-function normalizeMovie(movie?: Movie) {
-  return {
-    ...movie,
-    video_url: movie?.video_url ?? "https://www.youtube.com/embed/19g66ezsKAg",
-    duration: movie?.duration ?? 120,
-  };
-}
-
 export const CommentForm: FC<CommentFormProps> = ({ user, movie }) => {
   const form = useForm<CreateComment>({
     resolver: zodResolver(createCommentSchema),
@@ -43,13 +26,13 @@ export const CommentForm: FC<CommentFormProps> = ({ user, movie }) => {
   });
   const { replace } = useRouter();
 
-  const normalizedUser = normalizeUser(user);
-  const normalizedMovie = normalizeMovie(movie);
-
   const onSubmit = async (values: CreateComment) => {
     if (values.content === "") {
       toast("No escribiste nada para comentar");
     } else {
+      const normalizedUser = normalizeUser(user);
+      const normalizedMovie = normalizeMovie(movie);
+
       const data = {
         ...values,
         user: normalizedUser,
@@ -58,7 +41,7 @@ export const CommentForm: FC<CommentFormProps> = ({ user, movie }) => {
 
       await postComment(data);
       form.reset();
-      replace(`/movies/${movie?.slug}`, { scroll: true });
+      replace(`/movies/${movie?.slug}`, { scroll: false });
     }
   };
 

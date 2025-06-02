@@ -1,12 +1,12 @@
 import { CommentForm } from "@/components/comment-form";
 import { CommentScroll } from "@/components/comment-scroll";
-import { ReactionButton } from "@/components/reaction-button";
-import { Separator } from "@/components/ui/separator";
+import { ReactionSection } from "@/components/reaction-section";
 import { VideoPlayer } from "@/components/video-player";
 import { profile } from "@/services/auth";
 import { getCommentsByMovie } from "@/services/comment";
 import { updateMovieViewsBySlug } from "@/services/movies";
-import { Heart, ListVideo, ThumbsDown, ThumbsUp } from "lucide-react";
+import { CalendarDays, Clock3, Eye } from "lucide-react";
+import Image from "next/image";
 import { Suspense } from "react";
 
 interface PageProps {
@@ -22,7 +22,7 @@ const getData = async (path?: { slug?: string }) => {
 
     if (!movie) throw new Error("Movie not found");
 
-    const comments = await getCommentsByMovie(movie._id);
+    const comments = await getCommentsByMovie(movie?._id || "");
 
     return { user, movie, comments };
   } catch (error) {
@@ -43,48 +43,62 @@ export default async function Page({ params }: PageProps) {
   };
 
   return (
-    <section className="flex flex-wrap items-center justify-between gap-4 px-4 pt-20 md:px-8 lg:flex-nowrap lg:gap-10 lg:px-16">
+    <section className="flex flex-wrap items-start justify-between gap-4 px-4 pt-20 md:px-8 lg:flex-nowrap lg:gap-10 lg:px-16">
       <div className="w-full lg:w-[65%]">
-        <h1 className="mb-1 text-center text-lg font-bold md:mb-4 md:text-left md:text-2xl lg:mb-4 lg:text-3xl">
+        <h1 className="mb-4 text-center text-3xl font-extrabold md:text-left lg:mb-4 lg:text-4xl">
           {movie?.title}
         </h1>
-        <Separator />
-
-        <div className="mb-2 md:mb-4">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold">
-              {movie?.categories.join(", ")}
-            </p>
-            <div>
-              <span className="mr-2 text-xs font-semibold">Duración:</span>
-              <span className="text-muted-foreground text-xs font-bold sm:text-sm">
-                {movie?.duration || "No disponible"}
-              </span>
-            </div>
-          </div>
-          <Separator />
-
-          <p className="text-sm">{movie?.description}</p>
-        </div>
 
         <Suspense fallback={<p>Loading video...</p>}>
           <VideoPlayer src={getYouTubeEmbedUrl(movie?.video_url)} />
         </Suspense>
 
-        <div className="flex items-start justify-center gap-4 py-2 md:gap-8">
-          <ReactionButton label="Me gusta" Icon={ThumbsUp} />
-          <ReactionButton label="No me gusta" Icon={ThumbsDown} />
-          <ReactionButton label="Agregar a favoritos" Icon={Heart} />
-          <ReactionButton label="Agregar a una lista" Icon={ListVideo} />
+        <ReactionSection movie={movie || undefined} user={user || undefined} />
+
+        <div className="my-8">
+          <div className="flex gap-4">
+            <div className="px-8">
+              <Image
+                className="h-52 w-36 rounded-md object-cover"
+                src={movie?.poster_url || "/images/hero-bg.webp"}
+                alt={`Poster de la película ${movie?.title}`}
+                width={720}
+                height={1080}
+              />
+            </div>
+
+            <div className="flex flex-col justify-between">
+              <p className="flex items-center gap-2">
+                <span className="text-2xl font-semibold">Géneros: </span>
+                {movie?.categories?.join(", ")}
+              </p>
+              <p className="flex items-center gap-2">
+                <Clock3 />
+                <span className="text-2xl font-semibold">Duración: </span>
+                {movie?.duration ?? "No definido"}
+              </p>
+              <p className="flex items-center gap-2">
+                <CalendarDays />
+                <span className="text-2xl font-semibold">Año: </span>
+                {movie?.year}
+              </p>
+              <p className="flex items-center gap-2">
+                <Eye />
+                <span className="text-2xl font-semibold">Vistas: </span>
+                {movie?.views}
+              </p>
+            </div>
+          </div>
+
+          <p className="mt-4 text-sm leading-relaxed">{movie?.description}</p>
         </div>
       </div>
 
       <div className="w-full lg:w-[35%]">
         <h2 className="mb-2 text-lg font-semibold">Comentarios</h2>
         <div className="flex flex-col justify-between gap-10">
-          <CommentScroll comments={comments || []} />
-
           <CommentForm user={user || undefined} movie={movie || undefined} />
+          <CommentScroll comments={comments || []} />
         </div>
       </div>
     </section>

@@ -8,8 +8,8 @@ reaction = api.model(
     {
         "_id": fields.String(readonly=True),
         "type": fields.String(required=True, enum=["like", "dislike"]),
-        "user": fields.Nested(user_output, required=True),
-        "movie": fields.Nested(movie, required=True),
+        "user": fields.Nested(user_output, required=True, skip_none=True),
+        "movie": fields.Nested(movie, required=True, skip_none=True),
         "created_at": fields.DateTime(readonly=True),
         "updated_at": fields.DateTime(readonly=True),
     },

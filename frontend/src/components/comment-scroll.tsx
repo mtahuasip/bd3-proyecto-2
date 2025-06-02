@@ -9,7 +9,7 @@ interface CommentScrollProps {
 
 export const CommentScroll: FC<CommentScrollProps> = ({ comments }) => {
   return (
-    <ScrollArea className="h-[450px]">
+    <ScrollArea className="h-[700px]">
       {comments?.length === 0 && (
         <p className="text-center text-xs font-light md:text-lg">
           Todavía no hay comentarios, sé el primero en comentar.

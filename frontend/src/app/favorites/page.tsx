@@ -15,7 +15,7 @@ export default async function page() {
           <article key={movie._id} className="relative">
             <Image
               className="h-72 w-52 rounded-md mask-b-from-20% mask-b-to-80% object-cover"
-              src={movie.poster_url}
+              src={movie.poster_url || "/images/herp-bg.webp"}
               alt={`Poster de la película ${movie.title}`}
               width={720}
               height={1080}

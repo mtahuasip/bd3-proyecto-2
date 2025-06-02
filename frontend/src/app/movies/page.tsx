@@ -117,16 +117,6 @@ export default async function Page({ searchParams }: PageProps) {
     years,
   } = await getData(path, currentPage, perPage);
 
-  console.log({
-    session,
-    movies,
-    categories,
-    mostViewed,
-    recommended,
-    totalPages,
-    years,
-  });
-
   const MoviePosters = () => (
     <div className="flex flex-wrap items-center gap-4">
       {movies?.map((movie) => (
@@ -137,7 +127,7 @@ export default async function Page({ searchParams }: PageProps) {
           <Link href={`/movies/${movie.slug}`}>
             <Image
               className="h-auto w-full rounded-md object-cover"
-              src={movie.poster_url}
+              src={movie.poster_url || "/images/herp-bg.webp"}
               alt={`Poster de la película ${movie.title}`}
               width={720}
               height={1080}
