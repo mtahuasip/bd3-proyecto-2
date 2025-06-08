@@ -1,6 +1,7 @@
 import { AccessCard } from "@/components/access-card";
 import { Card, CardContent } from "@/components/ui/card";
 import { getSession } from "@/lib/session";
+import { profile } from "@/services/auth";
 import { getCategories, getNoAuthCategories } from "@/services/categories";
 
 export default async function Page() {
@@ -9,7 +10,8 @@ export default async function Page() {
       const session = await getSession();
       if (session) {
         const categories = await getCategories();
-        return { categories, user: session?.user };
+        const user = await profile();
+        return { categories, user };
       } else {
         const categories = await getNoAuthCategories();
         return { categories, user: null };

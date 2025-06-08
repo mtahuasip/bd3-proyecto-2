@@ -1,12 +1,18 @@
 import { UpdateProfileForm } from "@/components/update-profile-form";
 import { getSession } from "@/lib/session";
+import { profile } from "@/services/auth";
 
 export default async function Page() {
   const load = async () => {
     try {
       const session = await getSession();
+      if (session) {
+        const user = await profile();
 
-      return { user: session?.user };
+        return { user };
+      } else {
+        return { user: null };
+      }
     } catch (error) {
       console.log(error);
       return { user: null };

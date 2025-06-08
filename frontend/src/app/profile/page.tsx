@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getSession } from "@/lib/session";
+import { profile } from "@/services/auth";
 import { format } from "date-fns";
 import { CalendarIcon, LogInIcon, MailIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
@@ -11,8 +12,13 @@ export default async function Page() {
   const load = async () => {
     try {
       const session = await getSession();
+      if (session) {
+        const user = await profile();
 
-      return { user: session?.user };
+        return { user };
+      } else {
+        return { user: null };
+      }
     } catch (error) {
       console.log(error);
       return { user: null };
