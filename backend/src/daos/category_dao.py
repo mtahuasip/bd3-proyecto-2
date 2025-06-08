@@ -126,12 +126,5 @@ class CategoryDAO(object):
             print(f"❌ Error: {e}")
             api.abort(500, "Error interno del servidor")
 
-    # def get_samples(self, limit):
-    #     try:
-    #         return list(mongo.db.categories.aggregate([{"$sample": {"size": limit}}]))
-    #     except PyMongoError as e:
-    #         print(f"❌ Error de MongoDB: {e}")
-    #         api.abort(500, "Error interno del servidor")
-
 
 category_dao = CategoryDAO()

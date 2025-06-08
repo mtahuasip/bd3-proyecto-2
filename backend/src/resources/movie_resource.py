@@ -142,14 +142,14 @@ class TotalPages(Resource):
         )
 
 
-@ns.route("/years")
-@ns.response(404, "Años no encontrad0s")
-class Years(Resource):
-    @ns.doc("get_years")
-    @ns.marshal_list_with(year)
-    def get(self):
-        """Devuelve años de películas"""
-        return movie_dao.get_years()
+# @ns.route("/years")
+# @ns.response(404, "Años no encontrad0s")
+# class Years(Resource):
+#     @ns.doc("get_years")
+#     @ns.marshal_list_with(year)
+#     def get(self):
+#         """Devuelve años de películas"""
+#         return movie_dao.get_years()
 
 
 @ns.route("/by/<string:slug>")
