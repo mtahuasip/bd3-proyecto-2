@@ -142,19 +142,6 @@ class TotalPages(Resource):
         )
 
 
-@ns.route("/samples")
-@ns.response(404, "Películas no encontradas")
-class Samples(Resource):
-    @ns.doc("get_sample")
-    @ns.expect(limit_args)
-    @ns.marshal_list_with(movie)
-    def get(self):
-        """Devuelve películas de ejemplo"""
-        args = limit_args.parse_args()
-        limit = args["limit"]
-        return movie_dao.get_samples(limit)
-
-
 @ns.route("/years")
 @ns.response(404, "Años no encontrad0s")
 class Years(Resource):

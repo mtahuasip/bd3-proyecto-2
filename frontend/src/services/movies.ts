@@ -17,8 +17,8 @@ export const getMoviesMostViewed = async (
     endpoint: `/movies/most-viewed/${timeFrame}?limit=${limit || 5}`,
   });
 
-export const getMoviesSamples = async (limit?: number): Promise<Movie[]> =>
-  await api({ endpoint: `/movies/samples?limit=${limit || 5}` });
+export const getNoAuthMovies = async (): Promise<Movie[]> =>
+  await api({ endpoint: "/pages/no-auth/movies" });
 
 export const getMoviesYears = async (): Promise<Year[]> =>
   await api({ endpoint: "/movies/years" });

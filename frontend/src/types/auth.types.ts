@@ -54,6 +54,22 @@ export const changePasswordSchema = z
     path: ["repeat_password"],
   });
 
+export interface AuthUser {
+  _id: string;
+  username: string;
+  email: string;
+  roles: string[];
+  streaming_history: [] | null;
+  created_at: Date | null;
+  updated_at: Date | null;
+  last_login: Date | null;
+}
+
+export interface LoginResponse {
+  token: string | undefined;
+  user: AuthUser | undefined;
+}
+
 export type Register = z.infer<typeof registerSchema>;
 export type Login = z.infer<typeof loginSchema>;
 export type UpdateProfile = z.infer<typeof updateProfileSchema>;

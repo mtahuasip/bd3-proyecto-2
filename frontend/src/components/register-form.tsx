@@ -1,5 +1,6 @@
 "use client";
 
+import { setSession } from "@/lib/session";
 import { cn, parseError } from "@/lib/utils";
 import { register } from "@/services/auth";
 import { Register, registerSchema } from "@/types/auth.types";
@@ -51,9 +52,10 @@ export const RegisterForm = ({
 
   const onSubmit = async (values: Register) => {
     try {
-      const { message } = await register(values);
+      const response = await register(values);
+      await setSession(response);
       form.reset();
-      toast(message);
+      toast("¡Registro exitoso! Iniciando sesión.");
       router.push("/movies");
     } catch (error) {
       const parsed = parseError(error as Error);

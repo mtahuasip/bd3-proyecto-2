@@ -8,8 +8,6 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { getSession } from "@/lib/session";
-import { profile } from "@/services/auth";
-import { SessionUser } from "@/types/session.types";
 import { Menu, TvMinimalPlayIcon } from "lucide-react";
 import Link from "next/link";
 import { NavLink } from "./nav-link";
@@ -22,8 +20,18 @@ import {
 import { UserMenu } from "./user-menu";
 
 export const Navbar = async () => {
-  const session = await getSession();
-  let user: SessionUser | null = null;
+  const load = async () => {
+    try {
+      const session = await getSession();
+
+      return { user: session?.user };
+    } catch (error) {
+      console.log(error);
+      return { user: null };
+    }
+  };
+
+  const { user } = await load();
 
   const links = [
     { name: "Inicio", href: "/", requiresAuth: false, hideIfAuth: true },
@@ -32,16 +40,10 @@ export const Navbar = async () => {
     { name: "Favoritos", href: "/favorites", requiresAuth: true },
     { name: "Listas de reproducción", href: "/playlists", requiresAuth: true },
   ].filter((link) => {
-    if (link.requiresAuth && !session) return false;
-    if (link.hideIfAuth && session) return false;
+    if (link.requiresAuth && !user) return false;
+    if (link.hideIfAuth && user) return false;
     return true;
   });
-
-  try {
-    user = await profile();
-  } catch (error) {
-    console.log(error);
-  }
 
   const NavigationLinks = ({ className = "" }: { className?: string }) => (
     <NavigationMenu>
@@ -56,7 +58,7 @@ export const Navbar = async () => {
   );
 
   const SessionControls = () =>
-    session ? (
+    user ? (
       <UserMenu username={user?.username} />
     ) : (
       <>

@@ -1,5 +1,6 @@
 "use client";
 
+import { setSession } from "@/lib/session";
 import { cn, parseError } from "@/lib/utils";
 import { login } from "@/services/auth";
 import { Login, loginSchema } from "@/types/auth.types";
@@ -43,9 +44,10 @@ export function LoginForm({
 
   const onSubmit = async (values: Login) => {
     try {
-      const { message } = await login(values);
+      const response = await login(values);
+      await setSession(response);
       form.reset();
-      toast(message);
+      toast("Se ha iniciado sesión correctamente");
       router.push("/movies");
     } catch (error) {
       const parsed = parseError(error as Error);

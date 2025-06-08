@@ -19,7 +19,7 @@ const instance = async <T = unknown>({
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${session?.accessToken}`,
+      Authorization: `Bearer ${session?.token}`,
     },
     body: body ? JSON.stringify(body) : undefined,
   });

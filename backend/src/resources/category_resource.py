@@ -7,11 +7,6 @@ from src.utils.decorators import roles_required
 
 ns = Namespace("categories")
 
-# parser = reqparse.RequestParser()
-# parser.add_argument(
-#     "limit", type=int, default=5, help="Limite de resultados para devolver"
-# )
-
 
 @ns.route("/")
 class CategoryList(Resource):
@@ -60,19 +55,3 @@ class Category(Resource):
     def patch(self, id):
         """Actualiza parcialmente la categoría con el id proporcionado"""
         return category_dao.update(id, api.payload)
-
-
-# @ns.route("/samples")
-# @ns.response(404, "Categorías no encontradas")
-# class Samples(Resource):
-#     @ns.doc(
-#         "get_sample",
-#         params={"limit": "Limite de resultados para devolver (ejemplo 5, 10, 20)"},
-#     )
-#     @ns.expect(parser)
-#     @ns.marshal_list_with(category)
-#     def get(self):
-#         """Devuelve categorías de ejemplo"""
-#         args = parser.parse_args()
-#         limit = args["limit"]
-#         return category_dao.get_samples(limit)

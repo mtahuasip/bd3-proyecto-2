@@ -12,8 +12,8 @@ import {
   getMovies,
   getMoviesMostViewed,
   getMoviesRecommended,
-  getMoviesSamples,
   getMoviesYears,
+  getNoAuthMovies,
   getTotalPages,
 } from "@/services/movies";
 import { TimeFrame } from "@/types/movies.types";
@@ -85,9 +85,17 @@ const getData = async (
         years,
       };
     } else {
-      const movies = await getMoviesSamples(24);
+      const movies = await getNoAuthMovies();
 
-      return { session, movies };
+      return {
+        session: null,
+        movies,
+        totalPages: 0,
+        recommended: [],
+        mostViewed: [],
+        categories: [],
+        years: [],
+      };
     }
   } catch (error) {
     console.error("Error in getData:", error);

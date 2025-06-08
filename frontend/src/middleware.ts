@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { validateTokenOrRefresh } from "./lib/session";
-import { redirectTo } from "./lib/utils";
+import { getSession } from "./lib/session";
 
 // Rutas públicas que no requieren autenticación
 const publicRoutes = [
@@ -16,38 +15,31 @@ const publicRoutes = [
 // Rutas públicas restringidas si el usuario ya está autenticado
 const publicRestrictedWhenLoggedIn = ["/", "/login", "/register"];
 
+function redirectTo(path: string, request: NextRequest, clearCookies = false) {
+  const response = NextResponse.redirect(new URL(path, request.url));
+
+  if (clearCookies) {
+    response.cookies.delete("token");
+    response.cookies.delete("user");
+  }
+
+  return response;
+}
+
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const accessToken = request.cookies.get("access_token")?.value;
-  const refreshTokenValue = request.cookies.get("refresh_token")?.value;
-
+  const session = await getSession();
   const isPublic = publicRoutes.includes(pathname);
   const isPublicRestricted = publicRestrictedWhenLoggedIn.includes(pathname);
 
-  // Redirigir a login si no hay sesión y ruta no es pública
-  if (!accessToken && !isPublic) {
+  if (!session && !isPublic) {
     return redirectTo("/login", request);
   }
 
-  // Validar token y refrescar si expiró
-  if (accessToken) {
-    // const tokenIsValid = await validateTokenOrRefresh(
-    //   accessToken,
-    //   refreshTokenValue,
-    //   request
-    // );
-    const tokenIsValid = await validateTokenOrRefresh(refreshTokenValue);
-    if (!tokenIsValid) {
-      return redirectTo("/login", request, true);
-    }
-  }
-
-  // Redirigir a /movies si el usuario autenticado accede a login/register/home
-  if (accessToken && isPublicRestricted) {
+  if (session && isPublicRestricted) {
     return redirectTo("/movies", request);
   }
 
-  // Continuar normalmente
   return NextResponse.next();
 }
 
