@@ -7,16 +7,12 @@ import { RecommendedCarousel } from "@/components/recommended-carousel";
 import { Search } from "@/components/search";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getSession } from "@/lib/session";
-import { getCategories } from "@/services/categories";
 import {
+  getMoviePageData,
   getMovies,
-  getMoviesMostViewed,
-  getMoviesRecommended,
-  getMoviesYears,
   getNoAuthMovies,
   getTotalPages,
 } from "@/services/movies";
-import { TimeFrame } from "@/types/movies.types";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -70,17 +66,16 @@ const getData = async (
       const totalPages = await getTotalPages(
         queryString + `${queryString ? "&" : "?"}per_page=${perPage}`
       );
-      const recommended = await getMoviesRecommended(5);
-      const mostViewed = await getMoviesMostViewed(TimeFrame.WEEK, 10);
-      const categories = await getCategories();
-      const years = await getMoviesYears();
+
+      const { recommended, most_viewed, categories, years } =
+        await getMoviePageData();
 
       return {
         session,
         movies,
         totalPages,
         recommended,
-        mostViewed,
+        most_viewed,
         categories,
         years,
       };
@@ -92,7 +87,7 @@ const getData = async (
         movies,
         totalPages: 0,
         recommended: [],
-        mostViewed: [],
+        most_viewed: [],
         categories: [],
         years: [],
       };
@@ -104,7 +99,7 @@ const getData = async (
       movies: [],
       totalPages: 0,
       recommended: [],
-      mostViewed: [],
+      most_viewed: [],
       categories: [],
       years: [],
     };
@@ -119,7 +114,7 @@ export default async function Page({ searchParams }: PageProps) {
     session,
     movies,
     categories,
-    mostViewed,
+    most_viewed,
     recommended,
     totalPages,
     years,
@@ -176,7 +171,7 @@ export default async function Page({ searchParams }: PageProps) {
                 Mas vistos esta semana
               </h2>
 
-              <MostViewedScroll movies={mostViewed ?? []} />
+              <MostViewedScroll movies={most_viewed ?? []} />
             </div>
           </section>
         </TabsContent>

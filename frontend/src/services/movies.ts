@@ -1,6 +1,7 @@
 "use server";
 
 import api from "@/lib/fetch";
+import { Category } from "@/types/category.types";
 import { Movie, TimeFrame, Year } from "@/types/movies.types";
 
 export const getMovies = async (query?: string): Promise<Movie[]> =>
@@ -20,8 +21,8 @@ export const getMoviesMostViewed = async (
 export const getNoAuthMovies = async (): Promise<Movie[]> =>
   await api({ endpoint: "/pages/no-auth/movies" });
 
-export const getMoviesYears = async (): Promise<Year[]> =>
-  await api({ endpoint: "/movies/years" });
+// export const getMoviesYears = async (): Promise<Year[]> =>
+//   await api({ endpoint: "/movies/years" });
 
 export const getMovieBySlug = async (slug: string): Promise<Movie> =>
   await api({ endpoint: `/movies/by/${slug}` });
@@ -39,3 +40,10 @@ export const getTotalPages = async (query: string): Promise<number> => {
 
   return response.total_pages;
 };
+
+export const getMoviePageData = async (): Promise<{
+  recommended: Movie[];
+  most_viewed: Movie[];
+  categories: Category[];
+  years: Year[];
+}> => await api({ endpoint: "/pages/auth/movies" });

@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { getMoviesSamples } from "@/services/movies";
+import { getNoAuthMovies } from "@/services/movies";
 import Image from "next/image";
 import Link from "next/link";
 
 export default async function page() {
-  const movies = await getMoviesSamples(8);
+  const movies = await getNoAuthMovies();
 
   return (
     <section className="px-40 pt-20 pb-8">

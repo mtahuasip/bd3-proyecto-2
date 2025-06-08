@@ -27,20 +27,9 @@ class PageDAO(object):
             categories = category_dao.get_all()
             years = movie_dao.get_years()
 
-            # data = jsonify(
-            #     {
-            #         "recommended": recommended,
-            #         "mostViewed": mostViewed,
-            #         "categories": categories,
-            #         "years": years,
-            #     }
-            # )
-
-            # print(data)
-            # return data
             return {
                 "recommended": recommended,
-                "mostViewed": mostViewed,
+                "most_viewed": mostViewed,
                 "categories": categories,
                 "years": years,
             }
