@@ -4,7 +4,7 @@ import api from "@/lib/fetch";
 
 interface ReactionPayload {
   type: "like" | "dislike" | "favorite";
-  //   user?: SessionUser;
+  //   user?: AuthUser;
   //   movie?: Movie;
 }
 

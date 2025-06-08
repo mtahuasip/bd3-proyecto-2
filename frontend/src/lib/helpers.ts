@@ -1,7 +1,7 @@
+import { AuthUser } from "@/types/auth.types";
 import { Movie } from "@/types/movies.types";
-import { SessionUser } from "@/types/session.types";
 
-export const normalizeUser = (user?: SessionUser) => {
+export const normalizeUser = (user?: AuthUser) => {
   return {
     _id: user?._id ?? "",
     username: user?.username ?? "",

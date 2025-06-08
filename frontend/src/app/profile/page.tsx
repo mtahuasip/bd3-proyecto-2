@@ -3,22 +3,23 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getSession } from "@/lib/session";
-import { profile } from "@/services/auth";
-import { SessionUser } from "@/types/session.types";
 import { format } from "date-fns";
 import { CalendarIcon, LogInIcon, MailIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
 
 export default async function Page() {
-  const session = await getSession();
+  const load = async () => {
+    try {
+      const session = await getSession();
 
-  let user: SessionUser | null = null;
+      return { user: session?.user };
+    } catch (error) {
+      console.log(error);
+      return { user: null };
+    }
+  };
 
-  try {
-    if (session) user = await profile();
-  } catch (error) {
-    console.log(error);
-  }
+  const { user } = await load();
 
   return (
     <section className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">

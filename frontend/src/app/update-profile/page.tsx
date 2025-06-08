@@ -1,18 +1,19 @@
 import { UpdateProfileForm } from "@/components/update-profile-form";
 import { getSession } from "@/lib/session";
-import { profile } from "@/services/auth";
-import { SessionUser } from "@/types/session.types";
 
 export default async function Page() {
-  const session = await getSession();
+  const load = async () => {
+    try {
+      const session = await getSession();
 
-  let user: SessionUser | null = null;
+      return { user: session?.user };
+    } catch (error) {
+      console.log(error);
+      return { user: null };
+    }
+  };
 
-  try {
-    if (session) user = await profile();
-  } catch (error) {
-    console.log(error);
-  }
+  const { user } = await load();
 
   return (
     <section className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">

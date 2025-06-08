@@ -3,9 +3,9 @@
 import { Textarea } from "@/components/ui/textarea";
 import { normalizeMovie, normalizeUser } from "@/lib/helpers";
 import { postComment } from "@/services/comment";
+import { AuthUser } from "@/types/auth.types";
 import { CreateComment, createCommentSchema } from "@/types/comment.types";
 import { Movie } from "@/types/movies.types";
-import { SessionUser } from "@/types/session.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { FC } from "react";
@@ -15,7 +15,7 @@ import { Button } from "./ui/button";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form";
 
 interface CommentFormProps {
-  user?: SessionUser;
+  user?: AuthUser;
   movie?: Movie;
 }
 

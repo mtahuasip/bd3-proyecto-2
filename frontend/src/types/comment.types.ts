@@ -1,10 +1,10 @@
 import { z } from "zod";
+import { authUserSchema } from "./auth.types";
 import { movieSchema } from "./movies.types";
-import { SessionUserSchema } from "./session.types";
 
 export const commentSchema = z.object({
   _id: z.string(),
-  user: SessionUserSchema,
+  user: authUserSchema,
   content: z.string(),
   movie: movieSchema,
   // answers: z.array(z.any()),

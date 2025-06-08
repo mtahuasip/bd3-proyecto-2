@@ -4,14 +4,14 @@ import { ReactionButton } from "@/components/reaction-button";
 import { normalizeMovie, normalizeUser } from "@/lib/helpers";
 import { parseError } from "@/lib/utils";
 import { reaction } from "@/services/reaction";
+import { AuthUser } from "@/types/auth.types";
 import { Movie } from "@/types/movies.types";
-import { SessionUser } from "@/types/session.types";
 import { Heart, ThumbsDown, ThumbsUp } from "lucide-react";
 import { useState } from "react";
 
 interface ReactionSectionProps {
   movie?: Movie;
-  user?: SessionUser;
+  user?: AuthUser;
 }
 
 export const ReactionSection = ({ movie, user }: ReactionSectionProps) => {
