@@ -1,9 +1,9 @@
 from flask_restx import Namespace, Resource, reqparse, fields
 from flask_jwt_extended import jwt_required
 from src.extensions import api
-from src.models.movie import movie_dao
-from src.schemas.movie_schema import movie, year
-from src.utils.security.decorators import roles_required
+from src.daos.movie_dao import movie_dao
+from src.models.movie_model import movie, year
+from src.utils.decorators import roles_required
 
 ns = Namespace("movies")
 
@@ -32,7 +32,6 @@ movies_args.add_argument(
 )
 
 
-# Ruta para manejar todos los películas
 @ns.route("/")
 class MovieList(Resource):
     @ns.doc("get_movies")
@@ -61,7 +60,6 @@ class MovieList(Resource):
         return movie_dao.create(api.payload), 201
 
 
-# Ruta para manejar un película específico
 @ns.route("/<string:id>")
 @ns.response(404, "Película no encontrada")
 class Movie(Resource):

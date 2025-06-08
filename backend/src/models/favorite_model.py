@@ -1,6 +1,6 @@
 from flask_restx import fields
 from src.extensions import api
-from .movie_schema import movie
+from .movie_model import movie
 
 favorite = api.model(
     "Favorite",

@@ -6,12 +6,21 @@ user_input = api.model(
     {
         "username": fields.String(
             required=True,
-            pattern=r"^[A-Za-zÁÉÍÓÚáéíóúÑñ]+(?: [A-Za-zÁÉÍÓÚáéíóúÑñ]+){1,3}$",
+            pattern=r"^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9]+(?: [A-Za-zÁÉÍÓÚáéíóúÑñ0-9]+){0,9}$",
+            example="Juan Pérez",
+            description="Nombre completo del usuario (entre 2 y 4 palabras, solo letras y espacios).",
         ),
-        "email": fields.String(required=True, pattern=r"^[\w\.-]+@[\w\.-]+\.\w+$"),
+        "email": fields.String(
+            required=True,
+            pattern=r"^[\w\.-]+@[\w\.-]+\.\w+$",
+            example="juan.perez@mail.com",
+            description="Correo electrónico válido.",
+        ),
         "password": fields.String(
             required=True,
             pattern=r"^[a-zA-Z0-9._@!#$%^&*-]{8,}$",
+            example="Contraseña.2025",
+            description="Contraseña con mínimo 8 caracteres. Puede incluir letras, números y símbolos.",
         ),
         "roles": fields.List(
             fields.String(required=True, enum=["admin", "user", "staff"]),

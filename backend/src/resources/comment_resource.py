@@ -1,14 +1,13 @@
 from flask_restx import Namespace, Resource
 from flask_jwt_extended import jwt_required
 from src.extensions import api
-from src.models.comment import comment_dao
-from src.schemas.comment_schema import comment
-from src.utils.security.decorators import roles_required
+from src.daos.comment_dao import comment_dao
+from src.models.comment_model import comment
+from src.utils.decorators import roles_required
 
 ns = Namespace("comments")
 
 
-# Ruta para manejar todos los comentarios
 @ns.route("/")
 class CommentList(Resource):
     @ns.doc("get_comments")
@@ -29,7 +28,6 @@ class CommentList(Resource):
         return comment_dao.create(api.payload), 201
 
 
-# Ruta para manejar un comentario específico
 @ns.route("/<string:id>")
 @ns.response(404, "Comentario no encontrado")
 class Comment(Resource):

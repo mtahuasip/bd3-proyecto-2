@@ -3,13 +3,19 @@ from pymongo.errors import PyMongoError
 from werkzeug.security import check_password_hash
 from flask_jwt_extended import create_access_token, create_refresh_token
 from src.extensions import api, mongo
-from .user import user_dao
+from .user_dao import user_dao
 
 
 class AuthDAO(object):
     def register(self, data):
         data["roles"] = ["user"]
+        password = data["password"]
+        repeat_password = data["repeat_password"]
 
+        if password != repeat_password:
+            api.abort(400, "Las contraseñas no coinciden")
+
+        data["password"] = repeat_password
         new_user = user_dao.create(data)
 
         if not new_user:
@@ -34,43 +40,15 @@ class AuthDAO(object):
         if not is_valid:
             api.abort(401, "Credenciales inválidas")
 
-        access_token = create_access_token(
-            identity=user_found["email"],
-            expires_delta=timedelta(days=1),
-            fresh=True,
-            additional_claims={"roles": user_found["roles"]},
-        )
-
-        refresh_token = create_refresh_token(
+        token = create_access_token(
             identity=user_found["email"],
             expires_delta=timedelta(days=30),
+            additional_claims={"roles": user_found["roles"]},
         )
 
         user_dao.update_login(user_found["email"])
 
-        return {
-            "message": "Inicio de sesión exitoso",
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-        }
-
-    def refresh_token(self, current_user):
-        user_found = user_dao.get_user_by_email(email=current_user)
-
-        if not user_found:
-            api.abort(404, "Usuario no encontrado")
-
-        access_token = create_access_token(
-            identity=user_found["email"],
-            expires_delta=timedelta(days=1),
-            fresh=False,
-            additional_claims={"roles": user_found["roles"]},
-        )
-
-        return {
-            "message": "Token actualizado correctamente",
-            "access_token": access_token,
-        }
+        return {"token": token, "user": user_found}
 
     def profile(self, current_user):
         user_found = user_dao.get_user_by_email(email=current_user)

@@ -1,14 +1,13 @@
 from flask_restx import Namespace, Resource
 from flask_jwt_extended import jwt_required
 from src.extensions import api
-from src.models.reaction import reaction_dao
-from src.schemas.reaction_schema import reaction
-from src.utils.security.decorators import roles_required
+from src.daos.reaction_dao import reaction_dao
+from src.models.reaction_model import reaction
+from src.utils.decorators import roles_required
 
 ns = Namespace("reactions")
 
 
-# Ruta para manejar todas las reacciones
 @ns.route("/")
 class ReactionList(Resource):
     @ns.doc("get_reactions")
@@ -29,7 +28,6 @@ class ReactionList(Resource):
         return reaction_dao.create(api.payload), 201
 
 
-# Ruta para manejar una reacción específica
 @ns.route("/<string:id>")
 @ns.response(404, "Reacción no encontrada")
 class Reaction(Resource):

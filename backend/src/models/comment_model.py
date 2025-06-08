@@ -1,7 +1,7 @@
 from flask_restx import fields
 from src.extensions import api
-from .user_schema import user_output
-from .movie_schema import movie
+from .user_model import user_output
+from .movie_model import movie
 
 answer = api.model(
     "Answer",

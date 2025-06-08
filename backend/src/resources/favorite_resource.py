@@ -1,14 +1,13 @@
 from flask_restx import Namespace, Resource
 from flask_jwt_extended import jwt_required
 from src.extensions import api
-from src.models.favorite import favorite_dao
-from src.schemas.favorite_schema import favorite
-from src.utils.security.decorators import roles_required
+from src.daos.favorite_dao import favorite_dao
+from src.models.favorite_model import favorite
+from src.utils.decorators import roles_required
 
 ns = Namespace("favorites")
 
 
-# Ruta para manejar todos los favoritos
 @ns.route("/")
 class FavoriteList(Resource):
     @ns.doc("get_favorites")
@@ -29,7 +28,6 @@ class FavoriteList(Resource):
         return favorite_dao.create(api.payload), 201
 
 
-# Ruta para manejar un favorito específico
 @ns.route("/<string:id>")
 @ns.response(404, "Favorito no encontrado")
 class Favorite(Resource):

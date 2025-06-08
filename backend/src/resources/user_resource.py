@@ -1,14 +1,13 @@
 from flask_restx import Namespace, Resource
 from flask_jwt_extended import jwt_required
 from src.extensions import api
-from src.models.user import user_dao
-from src.schemas.user_schema import user_input, user_output, user_update
-from src.utils.security.decorators import roles_required
+from src.daos.user_dao import user_dao
+from src.models.user_model import user_input, user_output, user_update
+from src.utils.decorators import roles_required
 
 ns = Namespace("users")
 
 
-# Ruta para manejar todos los usuarios
 @ns.route("/")
 class UserList(Resource):
     @ns.doc("get_users")
@@ -29,7 +28,6 @@ class UserList(Resource):
         return user_dao.create(api.payload), 201
 
 
-# Ruta para manejar un usuario específico
 @ns.route("/<string:id>")
 @ns.response(404, "Usuario no encontrado")
 class User(Resource):

@@ -1,9 +1,9 @@
 from flask_restx import Namespace, Resource
 from flask_jwt_extended import jwt_required
 from src.extensions import api
-from src.models.playlist import playlist_dao
-from src.schemas.playlist_schema import playlist
-from src.utils.security.decorators import roles_required
+from src.daos.playlist_dao import playlist_dao
+from src.models.playlist_model import playlist
+from src.utils.decorators import roles_required
 
 ns = Namespace("playlists")
 
